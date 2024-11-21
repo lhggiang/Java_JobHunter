@@ -1,5 +1,4 @@
 package vn.hoanggiang.jobhunter.config;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -16,6 +15,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
@@ -34,7 +35,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint ) throws Exception {
         http
                 .csrf(c -> c.disable())
                 .authorizeHttpRequests(
@@ -42,7 +43,14 @@ public class SecurityConfiguration {
                                 .requestMatchers("/").permitAll()
                                 // .anyRequest().authenticated())
                                 .anyRequest().permitAll())
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
+                //mặc định chỉ có header, custom thêm body
+                // .exceptionHandling(
+                //     exceptions -> exceptions
+                //         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) //401
+                //         .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) //403
                 .formLogin(f -> f.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -75,5 +83,14 @@ public class SecurityConfiguration {
         };
     }
 
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthorityPrefix("");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("hoanggiang");
 
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
+    }
 }
