@@ -12,15 +12,10 @@ import vn.hoanggiang.jobhunter.util.constant.GenderEnum;
 @Setter
 public class ResCreateUserDTO {
     private long id;
-
     private String name;
     private String email;
-
     private int age;
-
-    @Enumerated(EnumType.STRING)
     private GenderEnum gender;
-
     private String address;
     private Instant createdAt;
 }

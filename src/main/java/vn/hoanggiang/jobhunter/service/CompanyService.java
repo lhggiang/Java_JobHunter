@@ -43,7 +43,7 @@ public class CompanyService {
 
     ResultPaginationDTO result = new ResultPaginationDTO();
     result.setMeta(meta);
-    result.setData(pCompany.getContent());
+    result.setResult(pCompany.getContent());
 
     return result;
   }
