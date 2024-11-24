@@ -1,4 +1,4 @@
-package vn.hoanggiang.jobhunter.domain;
+package vn.hoanggiang.jobhunter.domain.response;
 
 public class RestResponse<T> {
     private int statusCode;

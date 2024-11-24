@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.User;
-import vn.hoanggiang.jobhunter.domain.dto.LoginDTO;
-import vn.hoanggiang.jobhunter.domain.dto.ResLoginDTO;
+import vn.hoanggiang.jobhunter.domain.request.ReqLoginDTO;
+import vn.hoanggiang.jobhunter.domain.response.ResLoginDTO;
 import vn.hoanggiang.jobhunter.service.UserService;
 import vn.hoanggiang.jobhunter.service.error.IdInvalidException;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
         //tạo một token xác thực với thông tin username và password từ loginDTO
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsername(), loginDTO.getPassword());
@@ -114,7 +114,7 @@ public class AuthController {
             return ResponseEntity.ok().body(userLogin);
     }
 
-    @GetMapping("/auth/refresh")
+    @GetMapping("/refresh")
     @ApiMessage("Get User by refresh token")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException {

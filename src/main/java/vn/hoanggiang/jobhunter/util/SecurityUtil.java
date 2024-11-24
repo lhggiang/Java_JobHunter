@@ -2,9 +2,7 @@ package vn.hoanggiang.jobhunter.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -25,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 import com.nimbusds.jose.util.Base64;
 
-import vn.hoanggiang.jobhunter.domain.dto.ResLoginDTO;
+import vn.hoanggiang.jobhunter.domain.response.ResLoginDTO;
 
 @Service
 public class SecurityUtil {

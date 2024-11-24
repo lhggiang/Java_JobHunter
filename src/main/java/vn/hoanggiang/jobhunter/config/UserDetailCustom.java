@@ -1,4 +1,4 @@
-package vn.hoanggiang.jobhunter.service;
+package vn.hoanggiang.jobhunter.config;
 
 import java.util.Collections;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import vn.hoanggiang.jobhunter.service.UserService;
 
 @Component("userDetailsService")
 public class UserDetailCustom implements UserDetailsService {

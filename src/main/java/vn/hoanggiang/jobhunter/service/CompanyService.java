@@ -1,5 +1,6 @@
 package vn.hoanggiang.jobhunter.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -8,47 +9,70 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoanggiang.jobhunter.domain.Company;
-import vn.hoanggiang.jobhunter.domain.dto.Meta;
-import vn.hoanggiang.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoanggiang.jobhunter.domain.User;
+import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoanggiang.jobhunter.repository.CompanyRepository;
+import vn.hoanggiang.jobhunter.repository.UserRepository;
 
 @Service
 public class CompanyService {
-  private final CompanyRepository companyRepository;
 
-  public CompanyService(CompanyRepository companyRepository){
-    this.companyRepository = companyRepository;
-  }
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
-  public Company createCompany(Company company){
-    return this.companyRepository.save(company);
-  }
-
-  public Company updateCompany(Company company){
-    Optional<Company> existingCompany = this.companyRepository.findById(company.getId());
-    if(existingCompany.isPresent()){
-      return this.companyRepository.save(company);
+    public CompanyService(
+            CompanyRepository companyRepository,
+            UserRepository userRepository) {
+        this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
     }
-    return null;
-  }
 
-  public ResultPaginationDTO getAllCompanies(Specification<Company> specification, Pageable pageable){
-    Page<Company> pCompany = this.companyRepository.findAll(specification, pageable);
+    public Company handleCreateCompany(Company c) {
+        return this.companyRepository.save(c);
+    }
 
-    Meta meta = new Meta();
-    meta.setPage(pageable.getPageNumber() + 1);
-    meta.setPageSize(pageable.getPageSize());
-    meta.setPages(pCompany.getTotalPages());
-    meta.setTotal(pCompany.getTotalElements());
+    public ResultPaginationDTO handleGetCompany(Specification<Company> spec, Pageable pageable) {
+        Page<Company> pCompany = this.companyRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
-    ResultPaginationDTO result = new ResultPaginationDTO();
-    result.setMeta(meta);
-    result.setResult(pCompany.getContent());
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
 
-    return result;
-  }
+        mt.setPages(pCompany.getTotalPages());
+        mt.setTotal(pCompany.getTotalElements());
 
-  public void deleteCompany(long id){
-     this.companyRepository.deleteById(id);
-  }
+        rs.setMeta(mt);
+        rs.setResult(pCompany.getContent());
+        return rs;
+    }
+
+    public Company handleUpdateCompany(Company c) {
+        Optional<Company> companyOptional = this.companyRepository.findById(c.getId());
+        if (companyOptional.isPresent()) {
+            Company currentCompany = companyOptional.get();
+            currentCompany.setLogo(c.getLogo());
+            currentCompany.setName(c.getName());
+            currentCompany.setDescription(c.getDescription());
+            currentCompany.setAddress(c.getAddress());
+            return this.companyRepository.save(currentCompany);
+        }
+        return null;
+    }
+
+    public void handleDeleteCompany(long id) {
+        Optional<Company> comOptional = this.companyRepository.findById(id);
+        if (comOptional.isPresent()) {
+            Company com = comOptional.get();
+            // fetch all user belong to this company
+            List<User> users = this.userRepository.findByCompany(com);
+            this.userRepository.deleteAll(users);
+        }
+
+        this.companyRepository.deleteById(id);
+    }
+
+    public Optional<Company> findById(long id) {
+        return this.companyRepository.findById(id);
+    }
 }

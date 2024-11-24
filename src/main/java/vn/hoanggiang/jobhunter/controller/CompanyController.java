@@ -17,7 +17,7 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.Company;
-import vn.hoanggiang.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoanggiang.jobhunter.service.CompanyService;
 
 @RestController
@@ -31,24 +31,24 @@ public class CompanyController {
 
   @PostMapping
   public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(this.companyService.createCompany(company));
+    return ResponseEntity.status(HttpStatus.CREATED).body(this.companyService.handleCreateCompany(company));
   }
 
   @GetMapping
   public ResponseEntity<ResultPaginationDTO> getAllCompanies(
     @Filter Specification<Company> specification, Pageable pageable
   ) {
-    return ResponseEntity.ok(this.companyService.getAllCompanies(specification, pageable));
+    return ResponseEntity.ok(this.companyService.handleGetCompany(specification, pageable));
   }
 
   @PutMapping
   public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
-    return ResponseEntity.ok(this.companyService.createCompany(company));
+    return ResponseEntity.ok(this.companyService.handleUpdateCompany(company));
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id) {
-    this.companyService.deleteCompany(id);
+    this.companyService.handleDeleteCompany(id);
     return ResponseEntity.ok(null);
   }
 }

@@ -1,4 +1,4 @@
-package vn.hoanggiang.jobhunter.domain.dto;
+package vn.hoanggiang.jobhunter.domain.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
