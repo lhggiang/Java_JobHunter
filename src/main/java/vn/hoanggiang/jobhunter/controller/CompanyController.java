@@ -1,5 +1,7 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.Company;
 import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoanggiang.jobhunter.service.CompanyService;
+import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -51,4 +54,11 @@ public class CompanyController {
     this.companyService.handleDeleteCompany(id);
     return ResponseEntity.ok(null);
   }
+
+   @GetMapping("/{id}")
+    @ApiMessage("fetch company by id")
+    public ResponseEntity<Company> fetchCompanyById(@PathVariable("id") long id) {
+        Optional<Company> cOptional = this.companyService.findById(id);
+        return ResponseEntity.ok().body(cOptional.get());
+    }
 }

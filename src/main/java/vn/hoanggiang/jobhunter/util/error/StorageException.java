@@ -1,4 +1,4 @@
-package vn.hoanggiang.jobhunter.service.error;
+package vn.hoanggiang.jobhunter.util.error;
 
 public class StorageException extends Exception {
     // Constructor that accepts a message

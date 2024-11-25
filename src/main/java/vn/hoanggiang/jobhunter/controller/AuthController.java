@@ -19,9 +19,9 @@ import vn.hoanggiang.jobhunter.domain.User;
 import vn.hoanggiang.jobhunter.domain.request.ReqLoginDTO;
 import vn.hoanggiang.jobhunter.domain.response.ResLoginDTO;
 import vn.hoanggiang.jobhunter.service.UserService;
-import vn.hoanggiang.jobhunter.service.error.IdInvalidException;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
+import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -100,18 +100,23 @@ public class AuthController {
     //get current user's account
     @GetMapping("/account")
     @ApiMessage("fetch account")
-    public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
-            String email = SecurityUtil.getCurrentUserLogin().isPresent()
-                            ? SecurityUtil.getCurrentUserLogin().get()
-                            : "";
-            User currentUserDB = this.userService.handleGetUserByUsername(email);
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
-            if (currentUserDB != null) {
-                    userLogin.setId(currentUserDB.getId());
-                    userLogin.setEmail(currentUserDB.getEmail());
-                    userLogin.setName(currentUserDB.getName());
-            }
-            return ResponseEntity.ok().body(userLogin);
+    public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        User currentUserDB = this.userService.handleGetUserByUsername(email);
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+        ResLoginDTO.UserGetAccount userGetAccount = new ResLoginDTO.UserGetAccount();
+
+        if (currentUserDB != null) {
+            userLogin.setId(currentUserDB.getId());
+            userLogin.setEmail(currentUserDB.getEmail());
+            userLogin.setName(currentUserDB.getName());
+            userGetAccount.setUser(userLogin);
+        }
+
+        return ResponseEntity.ok().body(userGetAccount);
     }
 
     @GetMapping("/refresh")

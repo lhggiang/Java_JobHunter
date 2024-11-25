@@ -1,9 +1,7 @@
-package vn.hoanggiang.jobhunter.domain.response;
+package vn.hoanggiang.jobhunter.domain.response.user;
 
 import java.time.Instant;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoanggiang.jobhunter.util.constant.GenderEnum;

@@ -18,13 +18,13 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.User;
-import vn.hoanggiang.jobhunter.domain.response.ResCreateUserDTO;
-import vn.hoanggiang.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.hoanggiang.jobhunter.domain.response.ResUserDTO;
 import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoanggiang.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoanggiang.jobhunter.domain.response.user.ResUpdateUserDTO;
+import vn.hoanggiang.jobhunter.domain.response.user.ResUserDTO;
 import vn.hoanggiang.jobhunter.service.UserService;
-import vn.hoanggiang.jobhunter.service.error.IdInvalidException;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
+import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @RestController
 @RequestMapping("/api/v1/users")
