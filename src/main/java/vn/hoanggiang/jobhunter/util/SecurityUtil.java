@@ -45,29 +45,18 @@ public class SecurityUtil {
     @Value("${hoanggiang.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
-         private SecretKey getSecretKey() {
-        byte[] keyBytes = Base64.from(jwtKey).decode();
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length,
-                JWT_ALGORITHM.getName());
-    }
+    public String createAccessToken(String email, ResLoginDTO dto) {
+        ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
+        userToken.setId(dto.getUser().getId());
+        userToken.setEmail(dto.getUser().getEmail());
+        userToken.setName(dto.getUser().getName());
 
-    public Jwt checkValidRefreshToken(String token){
-     NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
-        getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
-        try {
-            return jwtDecoder.decode(token);
-        } catch (Exception e) {
-            System.out.println(">>> Refresh Token error: " + e.getMessage());
-            throw e;
-        }
-    }
-
-    public String createAccessToken(String email, ResLoginDTO.UserLogin dto) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
         // hardcode permission (for testing)
         List<String> listAuthority = new ArrayList<String>();
+
         listAuthority.add("ROLE_USER_CREATE");
         listAuthority.add("ROLE_USER_UPDATE");
 
@@ -76,32 +65,54 @@ public class SecurityUtil {
             .issuedAt(now)
             .expiresAt(validity)
             .subject(email)
-            .claim("user", dto)
-            // .claim("hoanggiang", authentication)
+            .claim("user", userToken)
             .claim("permission", listAuthority)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+
     }
 
-    public String createReFreshToken(String email, ResLoginDTO dto) {
+    public String createRefreshToken(String email, ResLoginDTO dto) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+
+        ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
+        userToken.setId(dto.getUser().getId());
+        userToken.setEmail(dto.getUser().getEmail());
+        userToken.setName(dto.getUser().getName());
 
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
-            //đối tượng mà token này hướng tới
             .subject(email)
-            //meta data
-            .claim("user", dto.getUser())
+            .claim("user", userToken)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+
     }
+
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = Base64.from(jwtKey).decode();
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length,
+                JWT_ALGORITHM.getName());
+    }
+
+    public Jwt checkValidRefreshToken(String token){
+     NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+                getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+                try {
+                     return jwtDecoder.decode(token);
+                } catch (Exception e) {
+                    System.out.println(">>> Refresh Token error: " + e.getMessage());
+                    throw e;
+                }
+    }
+    
     /**
      * Get the login of the current user.
      *
@@ -124,7 +135,7 @@ public class SecurityUtil {
         }
         return null;
     }
-    
+
     /**
      * Get the JWT of the current user.
      *
@@ -136,6 +147,7 @@ public class SecurityUtil {
             .filter(authentication -> authentication.getCredentials() instanceof String)
             .map(authentication -> (String) authentication.getCredentials());
     }
+
     /**
      * Check if a user is authenticated.
      *
@@ -145,6 +157,7 @@ public class SecurityUtil {
     //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     //     return authentication != null && getAuthorities(authentication).noneMatch(AuthoritiesConstants.ANONYMOUS::equals);
     // }
+
     /**
      * Checks if the current user has any of the authorities.
      *
@@ -157,6 +170,7 @@ public class SecurityUtil {
     //         authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(authorities).contains(authority))
     //     );
     // }
+
     /**
      * Checks if the current user has none of the authorities.
      *
@@ -166,6 +180,7 @@ public class SecurityUtil {
     // public static boolean hasCurrentUserNoneOfAuthorities(String... authorities) {
     //     return !hasCurrentUserAnyOfAuthorities(authorities);
     // }
+
     /**
      * Checks if the current user has a specific authority.
      *
@@ -175,7 +190,9 @@ public class SecurityUtil {
     // public static boolean hasCurrentUserThisAuthority(String authority) {
     //     return hasCurrentUserAnyOfAuthorities(authority);
     // }
+
     // private static Stream<String> getAuthorities(Authentication authentication) {
     //     return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority);
     // }
+
 }
