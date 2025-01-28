@@ -9,7 +9,8 @@ import vn.hoanggiang.jobhunter.domain.Skill;
 
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Long>,
-                JpaSpecificationExecutor<Skill> {
+            JpaSpecificationExecutor<Skill> {
       boolean existsByName(String name);
+
       List<Skill> findByIdIn(List<Long> id);
 }

@@ -24,7 +24,7 @@ import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 import vn.hoanggiang.jobhunter.util.error.StorageException;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/files")
 public class FileController {
 
     @Value("${hoanggiang.upload-file.base-uri}")
@@ -36,7 +36,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/files")
+    @PostMapping
     @ApiMessage("Upload single file")
     public ResponseEntity<ResUploadFileDTO> upload(
             @RequestParam(name = "file", required = false) MultipartFile file,
@@ -65,7 +65,7 @@ public class FileController {
         return ResponseEntity.ok().body(res);
     }
 
-    @GetMapping("/files")
+    @GetMapping
     @ApiMessage("Download a file")
     public ResponseEntity<Resource> download(
             @RequestParam(name = "fileName", required = false) String fileName,

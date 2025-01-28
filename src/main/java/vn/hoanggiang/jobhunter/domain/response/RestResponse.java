@@ -4,7 +4,7 @@ public class RestResponse<T> {
     private int statusCode;
     private String error;
 
-    // message có thể là string, hoặc arrayList
+    // message can be string or arrayList
     private Object message;
     private T data;
 
@@ -39,5 +39,4 @@ public class RestResponse<T> {
     public void setData(T data) {
         this.data = data;
     }
-
 }

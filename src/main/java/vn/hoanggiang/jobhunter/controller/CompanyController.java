@@ -22,6 +22,7 @@ import vn.hoanggiang.jobhunter.domain.Company;
 import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoanggiang.jobhunter.service.CompanyService;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
+import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -30,35 +31,48 @@ public class CompanyController {
 
   public CompanyController(CompanyService companyService) {
     this.companyService = companyService;
-  } 
+  }
 
+  // create company
   @PostMapping
-  public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) {
+  @ApiMessage("create a new company")
+  public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) throws IdInvalidException {
+    // check name exists or not
+    if (companyService.existsByName(company.getName())) {
+      throw new IdInvalidException(
+          "Công ty " + company.getName() + " đã tồn tại, vui lòng sử dụng tên khác.");
+    }
     return ResponseEntity.status(HttpStatus.CREATED).body(this.companyService.handleCreateCompany(company));
   }
 
+  // get all companies
   @GetMapping
+  @ApiMessage("fetch all companies")
   public ResponseEntity<ResultPaginationDTO> getAllCompanies(
-    @Filter Specification<Company> specification, Pageable pageable
-  ) {
+      @Filter Specification<Company> specification, Pageable pageable) {
     return ResponseEntity.ok(this.companyService.handleGetCompany(specification, pageable));
   }
 
+  // update company
   @PutMapping
+  @ApiMessage("update a company")
   public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
     return ResponseEntity.ok(this.companyService.handleUpdateCompany(company));
   }
 
+  // delete a company
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id) {
+  @ApiMessage("delete a company")
+  public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
     this.companyService.handleDeleteCompany(id);
     return ResponseEntity.ok(null);
   }
 
-   @GetMapping("/{id}")
-    @ApiMessage("fetch company by id")
-    public ResponseEntity<Company> fetchCompanyById(@PathVariable("id") long id) {
-        Optional<Company> cOptional = this.companyService.findById(id);
-        return ResponseEntity.ok().body(cOptional.get());
-    }
+  // fetch company by id
+  @GetMapping("/{id}")
+  @ApiMessage("fetch company by id")
+  public ResponseEntity<Company> fetchCompanyById(@PathVariable long id) {
+    Optional<Company> companyOptional = this.companyService.findById(id);
+    return ResponseEntity.ok().body(companyOptional.get());
+  }
 }

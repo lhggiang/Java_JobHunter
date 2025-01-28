@@ -21,52 +21,60 @@ import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/permissions")
 public class PermissionController {
     private final PermissionService permissionService;
+
     public PermissionController(PermissionService permissionService) {
         this.permissionService = permissionService;
     }
-    @PostMapping("/permissions")
-    @ApiMessage("Create a permission")
-    public ResponseEntity<Permission> create(@Valid @RequestBody Permission p) throws IdInvalidException {
+
+    // create a permission
+    @PostMapping
+    @ApiMessage("create a permission")
+    public ResponseEntity<Permission> createPermission(@Valid @RequestBody Permission permission)
+            throws IdInvalidException {
         // check exist
-        if (this.permissionService.isPermissionExist(p)) {
-            throw new IdInvalidException("Permission đã tồn tại.");
+        if (this.permissionService.isPermissionExist(permission)) {
+            throw new IdInvalidException("Permission already exists.");
         }
+
         // create new permission
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.permissionService.create(p));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.permissionService.createPermission(permission));
     }
-    @PutMapping("/permissions")
-    @ApiMessage("Update a permission")
-    public ResponseEntity<Permission> update(@Valid @RequestBody Permission p) throws IdInvalidException {
+
+    // update a permission
+    @PutMapping
+    @ApiMessage("update a permission")
+    public ResponseEntity<Permission> updatePermission(@Valid @RequestBody Permission permission)
+            throws IdInvalidException {
         // check exist by id
-        if (this.permissionService.fetchById(p.getId()) == null) {
-            throw new IdInvalidException("Permission với id = " + p.getId() + " không tồn tại.");
+        if (this.permissionService.fetchById(permission.getId()) == null) {
+            throw new IdInvalidException("Permission với id = " + permission.getId() + " không tồn tại.");
         }
         // check exist by module, apiPath and method
-        if (this.permissionService.isPermissionExist(p)) {
+        if (this.permissionService.isPermissionExist(permission)) {
             throw new IdInvalidException("Permission đã tồn tại.");
         }
-        // check name
-        if (this.permissionService.isSameName(p)) {
-            throw new IdInvalidException("Permission đã tồn tại.");
-        }  
         // update permission
-        return ResponseEntity.ok().body(this.permissionService.update(p));
+        return ResponseEntity.ok().body(this.permissionService.updatePermission(permission));
     }
-    @DeleteMapping("/permissions/{id}")
+
+    // delete a permission
+    @DeleteMapping("/{id}")
     @ApiMessage("delete a permission")
-    public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<Void> deletePermission(@PathVariable("id") long id) throws IdInvalidException {
         // check exist by id
         if (this.permissionService.fetchById(id) == null) {
             throw new IdInvalidException("Permission với id = " + id + " không tồn tại.");
         }
-        this.permissionService.delete(id);
+        this.permissionService.deletePermission(id);
         return ResponseEntity.ok().body(null);
     }
-    @GetMapping("/permissions")
-    @ApiMessage("Fetch permissions")
+
+    // fetch permissions
+    @GetMapping
+    @ApiMessage("fetch permissions")
     public ResponseEntity<ResultPaginationDTO> getPermissions(
             @Filter Specification<Permission> spec, Pageable pageable) {
         return ResponseEntity.ok(this.permissionService.getPermissions(spec, pageable));

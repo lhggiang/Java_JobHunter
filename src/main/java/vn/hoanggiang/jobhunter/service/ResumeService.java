@@ -52,10 +52,12 @@ public class ResumeService {
         this.jobRepository = jobRepository;
     }
 
+    // fetch resume by id
     public Optional<Resume> fetchById(long id) {
         return this.resumeRepository.findById(id);
     }
 
+    // check resume exist by user and job
     public boolean checkResumeExistByUserAndJob(Resume resume) {
         // check user by id
         if (resume.getUser() == null)
@@ -74,7 +76,8 @@ public class ResumeService {
         return true;
     }
 
-    public ResCreateResumeDTO create(Resume resume) {
+    // create a resume
+    public ResCreateResumeDTO createResume(Resume resume) {
         resume = this.resumeRepository.save(resume);
 
         ResCreateResumeDTO res = new ResCreateResumeDTO();
@@ -85,20 +88,26 @@ public class ResumeService {
         return res;
     }
 
-    public ResUpdateResumeDTO update(Resume resume) {
+    // update a resume
+    public ResUpdateResumeDTO updateResume(Resume resume) {
         resume = this.resumeRepository.save(resume);
+
         ResUpdateResumeDTO res = new ResUpdateResumeDTO();
         res.setUpdatedAt(resume.getUpdatedAt());
         res.setUpdatedBy(resume.getUpdatedBy());
+
         return res;
     }
 
-    public void delete(long id) {
+    // delete resume
+    public void deleteResume(long id) {
         this.resumeRepository.deleteById(id);
     }
 
+    // get resume
     public ResFetchResumeDTO getResume(Resume resume) {
         ResFetchResumeDTO res = new ResFetchResumeDTO();
+
         res.setId(resume.getId());
         res.setEmail(resume.getEmail());
         res.setUrl(resume.getUrl());
@@ -118,6 +127,7 @@ public class ResumeService {
         return res;
     }
 
+    // fetch all resumes
     public ResultPaginationDTO fetchAllResume(Specification<Resume> spec, Pageable pageable) {
         Page<Resume> pageUser = this.resumeRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
@@ -141,11 +151,10 @@ public class ResumeService {
         return rs;
     }
 
+    // fetch resume by user
     public ResultPaginationDTO fetchResumeByUser(Pageable pageable) {
-        // query builder
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
-                ? SecurityUtil.getCurrentUserLogin().get()
-                : "";
+        String email = SecurityUtil.getCurrentUserLogin().orElse("");
+
         FilterNode node = filterParser.parse("email='" + email + "'");
         FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
         Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
@@ -170,4 +179,5 @@ public class ResumeService {
 
         return rs;
     }
+
 }

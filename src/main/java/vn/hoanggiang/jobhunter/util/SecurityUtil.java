@@ -45,7 +45,9 @@ public class SecurityUtil {
     @Value("${hoanggiang.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
+    // create access token
     public String createAccessToken(String email, ResLoginDTO dto) {
+        // create payload
         ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
         userToken.setId(dto.getUser().getId());
         userToken.setEmail(dto.getUser().getEmail());
@@ -69,19 +71,22 @@ public class SecurityUtil {
             .claim("permission", listAuthority)
             .build();
 
+        //create header
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        
+        //jwsHeader (header), claims (payload), key (secret key from function jwtEncoder)
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
 
     }
 
     public String createRefreshToken(String email, ResLoginDTO dto) {
-        Instant now = Instant.now();
-        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
-
         ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
         userToken.setId(dto.getUser().getId());
         userToken.setEmail(dto.getUser().getEmail());
         userToken.setName(dto.getUser().getName());
+
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
 
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -92,6 +97,8 @@ public class SecurityUtil {
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+
+        //jwsHeader (header), claims (payload), key (secret key from function jwtEncoder)
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
 
     }
@@ -118,6 +125,7 @@ public class SecurityUtil {
      *
      * @return the login of the current user.
      */
+    //get info from SecurityContextHolder -> get authentication -> get data from authentication (extractPrincipal)
     public static Optional<String> getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));

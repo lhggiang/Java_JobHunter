@@ -19,62 +19,82 @@ import vn.hoanggiang.jobhunter.repository.RoleRepository;
 public class RoleService {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
+
     public RoleService(
             RoleRepository roleRepository,
             PermissionRepository permissionRepository) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
     }
+
+    // check name exists or not
     public boolean existByName(String name) {
         return this.roleRepository.existsByName(name);
     }
-    public Role create(Role r) {
-        // check permissions
-        if (r.getPermissions() != null) {
-            List<Long> reqPermissions = r.getPermissions()
-                    .stream().map(x -> x.getId())
+
+    // create a role
+    public Role createRole(Role role) {
+        // check permissions sent exists or not
+        if (role.getPermissions() != null) {
+            List<Long> reqPermissions = role.getPermissions()
+                    .stream().map(item -> item.getId())
                     .collect(Collectors.toList());
+
             List<Permission> dbPermissions = this.permissionRepository.findByIdIn(reqPermissions);
-            r.setPermissions(dbPermissions);
+            role.setPermissions(dbPermissions);
         }
-        return this.roleRepository.save(r);
+        return this.roleRepository.save(role);
     }
+
+    // fetch role by id
     public Role fetchById(long id) {
         Optional<Role> roleOptional = this.roleRepository.findById(id);
-        if (roleOptional.isPresent())
-            return roleOptional.get();
-        return null;
+        return roleOptional.orElse(null);
     }
-    public Role update(Role r) {
-        Role roleDB = this.fetchById(r.getId());
+
+    // update a role
+    public Role updateRole(Role role) {
+        Role roleDB = this.fetchById(role.getId());
+
         // check permissions
-        if (r.getPermissions() != null) {
-            List<Long> reqPermissions = r.getPermissions()
+        if (role.getPermissions() != null) {
+            List<Long> reqPermissions = role.getPermissions()
                     .stream().map(x -> x.getId())
                     .collect(Collectors.toList());
             List<Permission> dbPermissions = this.permissionRepository.findByIdIn(reqPermissions);
-            r.setPermissions(dbPermissions);
+            role.setPermissions(dbPermissions);
         }
-        roleDB.setName(r.getName());
-        roleDB.setDescription(r.getDescription());
-        roleDB.setActive(r.isActive());
-        roleDB.setPermissions(r.getPermissions());
+
+        roleDB.setName(role.getName());
+        roleDB.setDescription(role.getDescription());
+        roleDB.setActive(role.isActive());
+        roleDB.setPermissions(role.getPermissions());
+
         roleDB = this.roleRepository.save(roleDB);
+
         return roleDB;
     }
-    public void delete(long id) {
+
+    // delete a role
+    public void deleteRole(long id) {
         this.roleRepository.deleteById(id);
     }
+
+    // get all roles
     public ResultPaginationDTO getRoles(Specification<Role> spec, Pageable pageable) {
         Page<Role> pRole = this.roleRepository.findAll(spec, pageable);
+
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
         mt.setPages(pRole.getTotalPages());
         mt.setTotal(pRole.getTotalElements());
+
         rs.setMeta(mt);
         rs.setResult(pRole.getContent());
+
         return rs;
     }
 }

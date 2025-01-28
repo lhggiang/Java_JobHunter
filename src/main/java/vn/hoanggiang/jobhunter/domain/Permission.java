@@ -18,23 +18,28 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "permissions")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "name không được để trống")
+    @NotBlank(message = "name cannot be empty")
     private String name;
-    @NotBlank(message = "apiPath không được để trống")
+
+    @NotBlank(message = "apiPath cannot be empty")
     private String apiPath;
-    @NotBlank(message = "method không được để trống")
+
+    @NotBlank(message = "method cannot be empty")
     private String method;
-    @NotBlank(message = "module không được để trống")
+
+    @NotBlank(message = "module cannot be empty")
     private String module;
 
     private Instant createdAt;
@@ -42,22 +47,26 @@ public class Permission {
     private String createdBy;
     private String updatedBy;
 
+    public Permission(String name, String apiPath, String method, String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = method;
+        this.module = module;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
     @JsonIgnore
     private List<Role> roles;
 
     @PrePersist
     public void handleBeforeCreate() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
-                ? SecurityUtil.getCurrentUserLogin().get()
-                : "";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().orElse("");
         this.createdAt = Instant.now();
     }
+
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
-                ? SecurityUtil.getCurrentUserLogin().get()
-                : "";
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().orElse("");
         this.updatedAt = Instant.now();
     }
 }

@@ -35,7 +35,7 @@ public class User {
     private long id;
 
     private String name;
-    
+
     @NotBlank(message = "email không được để trống")
     private String email;
 
@@ -51,7 +51,7 @@ public class User {
 
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
-    
+
     private Instant createdAt;
 
     private Instant updatedAt;
@@ -73,18 +73,20 @@ public class User {
     private Role role;
 
     @PrePersist
-    public void handleBeforeCreate(){
+    public void handleBeforeCreate() {
         this.createdAt = Instant.now();
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true 
-                                ? SecurityUtil.getCurrentUserLogin().get() 
-                                : "";  
+        // this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        // ? SecurityUtil.getCurrentUserLogin().get()
+        // : "";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().orElse("");
     }
 
     @PreUpdate
-    public void handleBeforeUpdate(){
+    public void handleBeforeUpdate() {
         this.updatedAt = Instant.now();
-        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true 
-                                ? SecurityUtil.getCurrentUserLogin().get() 
-                                : "";  
-    }      
+        // this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        // ? SecurityUtil.getCurrentUserLogin().get()
+        // : "";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().orElse("");
+    }
 }

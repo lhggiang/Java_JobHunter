@@ -38,15 +38,15 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //create a new user
+    // create a new user
     @PostMapping
-    @ApiMessage("Create a new user")
+    @ApiMessage("create a new user")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User user)
             throws IdInvalidException {
         boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
         if (isEmailExist) {
             throw new IdInvalidException(
-                    "Email " + user.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+                    "Email " + user.getEmail() + " đã tồn tại, vui lòng sử dụng email khác.");
         }
 
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
@@ -55,9 +55,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(newUser));
     }
 
-    //delete a user
+    // delete a user
     @DeleteMapping("/{id}")
-    @ApiMessage("Delete a user")
+    @ApiMessage("delete a user")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id)
             throws IdInvalidException {
         User currentUser = this.userService.fetchUserById(id);
@@ -69,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    //fetch user by id
+    // fetch user by id
     @GetMapping("/{id}")
     @ApiMessage("fetch user by id")
     public ResponseEntity<ResUserDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
@@ -77,9 +77,7 @@ public class UserController {
         if (fetchUser == null) {
             throw new IdInvalidException("User với id = " + id + " không tồn tại");
         }
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(this.userService.convertToResUserDTO(fetchUser));
+        return ResponseEntity.ok(this.userService.convertToResUserDTO(fetchUser));
     }
 
     // fetch all users
@@ -88,20 +86,19 @@ public class UserController {
     public ResponseEntity<ResultPaginationDTO> getAllUser(
             @Filter Specification<User> spec,
             Pageable pageable) {
-
         return ResponseEntity.status(HttpStatus.OK).body(
                 this.userService.fetchAllUser(spec, pageable));
     }
 
-    //update a user
+    // update a user
     @PutMapping
-    @ApiMessage("Update a user")
+    @ApiMessage("update a user")
     public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
-        User ericUser = this.userService.handleUpdateUser(user);
-        if (ericUser == null) {
+        User curentUser = this.userService.handleUpdateUser(user);
+        if (curentUser == null) {
             throw new IdInvalidException("User với id = " + user.getId() + " không tồn tại");
         }
-        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(ericUser));
+        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(curentUser));
     }
 
 }

@@ -4,10 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import vn.hoanggiang.jobhunter.domain.Role;
+import vn.hoanggiang.jobhunter.domain.Subscriber;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
-    boolean existsByName(String name);
-    Role findByName(String name);
+public interface SubscriberRepository extends JpaRepository<Subscriber, Long>,
+    JpaSpecificationExecutor<Subscriber> {
+
+  boolean existsByEmail(String email);
 }
