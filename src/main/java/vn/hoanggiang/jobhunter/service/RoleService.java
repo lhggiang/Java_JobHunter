@@ -52,6 +52,11 @@ public class RoleService {
         return roleOptional.orElse(null);
     }
 
+    // fetch role by name
+    public Role fetchByName(String name) {
+        return this.roleRepository.findByName(name);
+    }
+
     // update a role
     public Role updateRole(Role role) {
         Role roleDB = this.fetchById(role.getId());

@@ -43,6 +43,9 @@ public class UserService {
         // check role
         if (user.getRole() != null) {
             Role role = this.roleService.fetchById(user.getRole().getId());
+            if(role == null){
+                role = this.roleService.fetchByName(user.getRole().getName());
+            }
             user.setRole(role != null ? role : null);
         }
 
@@ -59,6 +62,7 @@ public class UserService {
         Optional<User> userOptional = this.userRepository.findById(id);
         return userOptional.orElse(null);
     }
+
 
     // fetch all users
     public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {

@@ -1,12 +1,10 @@
 package vn.hoanggiang.jobhunter.service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -23,8 +21,8 @@ public class EmailService {
   private final JobRepository jobRepository;
 
   public EmailService(JavaMailSender javaMailSender,
-                      SpringTemplateEngine templateEngine,
-                      JobRepository jobRepository) {
+      SpringTemplateEngine templateEngine,
+      JobRepository jobRepository) {
     this.javaMailSender = javaMailSender;
     this.templateEngine = templateEngine;
     this.jobRepository = jobRepository;
@@ -46,11 +44,11 @@ public class EmailService {
 
   @Async
   public void sendEmailFromTemplateSync(
-          String to,
-          String subject,
-          String templateName,
-          String username,
-          Object value) {
+      String to,
+      String subject,
+      String templateName,
+      String username,
+      Object value) {
 
     Context context = new Context();
     context.setVariable("name", username);

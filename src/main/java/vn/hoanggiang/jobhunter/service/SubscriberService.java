@@ -30,7 +30,7 @@ public class SubscriberService {
     this.subscriberRepository = subscriberRepository;
     this.skillRepository = skillRepository;
     this.jobRepository = jobRepository;
-    this.emailService =  emailService;
+    this.emailService = emailService;
   }
 
   // check email exists
@@ -73,6 +73,10 @@ public class SubscriberService {
     return subsOptional.orElse(null);
   }
 
+  public Subscriber findByEmail(String email) {
+    return this.subscriberRepository.findByEmail(email);
+  }
+
   public ResEmailJob convertJobToSendEmail(Job job) {
     ResEmailJob res = new ResEmailJob();
     res.setName(job.getName());
@@ -80,7 +84,7 @@ public class SubscriberService {
     res.setCompany(new ResEmailJob.CompanyEmail(job.getCompany().getName()));
     List<Skill> skills = job.getSkills();
     List<ResEmailJob.SkillEmail> s = skills.stream().map(skill -> new ResEmailJob.SkillEmail(skill.getName()))
-            .collect(Collectors.toList());
+        .collect(Collectors.toList());
     res.setSkills(s);
     return res;
   }
@@ -95,14 +99,14 @@ public class SubscriberService {
           if (listJobs != null && listJobs.size() > 0) {
 
             List<ResEmailJob> arr = listJobs.stream().map(
-                    job -> this.convertJobToSendEmail(job)).collect(Collectors.toList());
+                job -> this.convertJobToSendEmail(job)).collect(Collectors.toList());
 
             this.emailService.sendEmailFromTemplateSync(
-                    sub.getEmail(),
-                    "Cơ hội việc làm hot đang chờ đón bạn, khám phá ngay",
-                    "job",
-                    sub.getName(),
-                    arr);
+                sub.getEmail(),
+                "Cơ hội việc làm hot đang chờ đón bạn, khám phá ngay",
+                "job",
+                sub.getName(),
+                arr);
           }
         }
       }

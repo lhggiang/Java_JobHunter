@@ -25,7 +25,7 @@ import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @RestController
-@RequestMapping("/api/v1/companies")
+@RequestMapping("/api/v1")
 public class CompanyController {
   private final CompanyService companyService;
 
@@ -34,7 +34,7 @@ public class CompanyController {
   }
 
   // create company
-  @PostMapping
+  @PostMapping("/companies")
   @ApiMessage("create a new company")
   public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) throws IdInvalidException {
     // check name exists or not
@@ -46,7 +46,7 @@ public class CompanyController {
   }
 
   // get all companies
-  @GetMapping
+  @GetMapping("/companies")
   @ApiMessage("fetch all companies")
   public ResponseEntity<ResultPaginationDTO> getAllCompanies(
       @Filter Specification<Company> specification, Pageable pageable) {
@@ -54,14 +54,14 @@ public class CompanyController {
   }
 
   // update company
-  @PutMapping
+  @PutMapping("/companies")
   @ApiMessage("update a company")
   public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
     return ResponseEntity.ok(this.companyService.handleUpdateCompany(company));
   }
 
   // delete a company
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/companies/{id}")
   @ApiMessage("delete a company")
   public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
     this.companyService.handleDeleteCompany(id);
@@ -69,7 +69,7 @@ public class CompanyController {
   }
 
   // fetch company by id
-  @GetMapping("/{id}")
+  @GetMapping("/companies/{id}")
   @ApiMessage("fetch company by id")
   public ResponseEntity<Company> fetchCompanyById(@PathVariable long id) {
     Optional<Company> companyOptional = this.companyService.findById(id);

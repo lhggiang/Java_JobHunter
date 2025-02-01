@@ -8,18 +8,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import vn.hoanggiang.jobhunter.domain.Role;
 import vn.hoanggiang.jobhunter.domain.User;
+import vn.hoanggiang.jobhunter.domain.request.ExchangeTokenRequest;
 import vn.hoanggiang.jobhunter.domain.request.ReqLoginDTO;
+import vn.hoanggiang.jobhunter.domain.response.ExchangeTokenResponse;
+import vn.hoanggiang.jobhunter.domain.response.OutboundUserResponse;
 import vn.hoanggiang.jobhunter.domain.response.ResLoginDTO;
 import vn.hoanggiang.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoanggiang.jobhunter.repository.OutboundIdentityClient;
+import vn.hoanggiang.jobhunter.repository.OutboundUserClient;
 import vn.hoanggiang.jobhunter.service.UserService;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
@@ -37,16 +38,34 @@ public class AuthController {
     private final SecurityUtil securityUtil;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final OutboundUserClient outboundUserClient;
+    private final OutboundIdentityClient outboundIdentityClient;
 
     @Value("${hoanggiang.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
+    @Value("${outbound.identity.client-id}")
+    protected String CLIENT_ID;
+
+    @Value("${outbound.identity.client-secret}")
+    protected String CLIENT_SECRET;
+
+    @Value("${outbound.identity.redirect-uri}")
+    protected String REDIRECT_URI;
+
+    protected final String GRANT_TYPE = "authorization_code";
+
     public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
-            SecurityUtil securityUtil, UserService userService, PasswordEncoder passwordEncoder) {
+                          SecurityUtil securityUtil, UserService userService,
+                          PasswordEncoder passwordEncoder,
+                          OutboundIdentityClient outboundIdentityClient,
+                          OutboundUserClient outboundUserClient) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.outboundIdentityClient = outboundIdentityClient;
+        this.outboundUserClient = outboundUserClient;
     }
 
     @PostMapping("/login")
@@ -126,7 +145,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-    @ApiMessage("get User by refresh token")
+    @ApiMessage("get user by refresh token")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException {
         if (refresh_token.equals("abc")) {
@@ -221,5 +240,76 @@ public class AuthController {
 
         User user = this.userService.handleCreateUser(reqUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(user));
+    }
+
+    @PostMapping("/outbound/authentication")
+    @ApiMessage("login with google")
+    public ResponseEntity<ResLoginDTO> outboundAuthenticate(@RequestParam("code") String code) throws IdInvalidException {
+        //get token
+        ExchangeTokenResponse response = outboundIdentityClient.exchangeToken(ExchangeTokenRequest.builder()
+                .code(code)
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
+                .redirectUri(REDIRECT_URI)
+                .grantType(GRANT_TYPE)
+                .build());
+
+        // get user info
+        OutboundUserResponse userInfo = outboundUserClient.getUserInfo("json", response.getAccessToken());
+
+        // onboard user
+        boolean isEmailExist = this.userService.isEmailExist(userInfo.getEmail());
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                    "Email " + userInfo.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+        }
+
+        User user = new User();
+        user.setEmail(userInfo.getEmail());
+        user.setName(userInfo.getName());
+
+        Role role = new Role();
+        role.setName("USER");
+        user.setRole(role);
+
+        this.userService.handleCreateUser(user);
+
+        ResLoginDTO res = new ResLoginDTO();
+
+        User currentUserDB = this.userService.handleGetUserByUsername(userInfo.getEmail());
+
+        if (currentUserDB != null) {
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+                    currentUserDB.getId(), currentUserDB.getEmail(), currentUserDB.getName(), currentUserDB.getRole());
+            res.setUser(userLogin);
+        }
+
+        // create a token
+        String access_token = this.securityUtil.createAccessToken(userInfo.getEmail(), res);
+
+        res.setAccessToken(access_token);
+
+        // create refresh token
+        String refresh_token = this.securityUtil.createRefreshToken(userInfo.getEmail(), res);
+
+        // save user's refresh token into DB
+        this.userService.updateUserToken(refresh_token, userInfo.getEmail());
+
+        // set cookies
+        // save refresh toke into cookie
+        ResponseCookie resCookies = ResponseCookie
+                .from("refresh_token", refresh_token)
+                // cookie chỉ được truy cập bởi server, tránh lộ thông tin qua JavaScript
+                .httpOnly(true)
+                // chỉ gửi cookie qua HTTPS
+                .secure(true)
+                // url set cookie
+                .path("/")
+                .maxAge(refreshTokenExpiration)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, resCookies.toString())
+                .body(res);
     }
 }

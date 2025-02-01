@@ -13,6 +13,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -47,6 +53,7 @@ public class SecurityConfiguration {
                 "/storage/**",
                 "/api/v1/auth/register",
                 "/api/v1/email/**",
+                "/api/v1/auth/outbound/authentication",
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html"
@@ -57,9 +64,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers(whiteList).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/companies").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/skills").permitAll()
+                                .requestMatchers("/", "/api/v1/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
