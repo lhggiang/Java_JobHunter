@@ -30,10 +30,26 @@ dependencies {
 	implementation("com.turkraft.springfilter:jpa:3.1.7")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
+
+	implementation ("org.springframework.boot:spring-boot-starter-logging")
+
+	// Logstash Logback Encoder
+	implementation("net.logstash.logback:logstash-logback-encoder:7.2")
+
+	// SLF4J Logger (API for logging)
+	implementation("org.slf4j:slf4j-api:2.0.16")
+
+
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+
+	// Logback (implementation for logging)
+	testImplementation ("ch.qos.logback:logback-classic:1.5.16")
+
+//	compileOnly ("org.projectlombok:lombok:1.18.24")
+//	annotationProcessor ("org.projectlombok:lombok:1.18.24")
 }
 
 tasks.withType<Test> {

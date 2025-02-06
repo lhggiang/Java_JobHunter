@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,7 @@ import vn.hoanggiang.jobhunter.domain.response.user.ResUserDTO;
 import vn.hoanggiang.jobhunter.repository.UserRepository;
 
 @Service
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final CompanyService companyService;
@@ -49,6 +51,7 @@ public class UserService {
             user.setRole(role != null ? role : null);
         }
 
+        log.info("Create user successfully");
         return this.userRepository.save(user);
     }
 

@@ -1,5 +1,6 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +33,7 @@ import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Slf4j
 public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -116,6 +118,8 @@ public class AuthController {
                 .path("/")
                 .maxAge(refreshTokenExpiration)
                 .build();
+
+        log.info("Login Successfully");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
