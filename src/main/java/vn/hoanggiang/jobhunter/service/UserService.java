@@ -80,7 +80,7 @@ public class UserService {
 
         // remove sensitive data
         List<ResUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> this.convertToResUserDTO(item))
+                .stream().map(this::convertToResUserDTO)
                 .collect(Collectors.toList());
 
         rs.setResult(listUser);

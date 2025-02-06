@@ -1,5 +1,6 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -68,6 +69,7 @@ public class AuthController {
         this.outboundUserClient = outboundUserClient;
     }
 
+//    @Cacheable(value = "userLoginCache", key = "#username")
     @PostMapping("/login")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
         // tạo một token xác thực với thông tin username và password từ loginDTO
