@@ -39,14 +39,18 @@ dependencies {
 	// SLF4J Logger (API for logging)
 	implementation("org.slf4j:slf4j-api:2.0.16")
 
+	// redis
+	implementation("org.springframework.data:spring-data-redis")
+	implementation("redis.clients:jedis:5.1.3")
+
+	// pdfbox
+	implementation("org.apache.pdfbox:pdfbox:3.0.3")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 
-	// Logback (implementation for logging)
-	testImplementation ("ch.qos.logback:logback-classic:1.5.16")
 
 //	compileOnly ("org.projectlombok:lombok:1.18.24")
 //	annotationProcessor ("org.projectlombok:lombok:1.18.24")

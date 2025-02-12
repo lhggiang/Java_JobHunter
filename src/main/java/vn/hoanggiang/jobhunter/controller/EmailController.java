@@ -21,8 +21,8 @@ public class EmailController {
 
   @GetMapping
   @ApiMessage("Send simple email")
-  // @Scheduled(cron = "*/10 * * * * *")
-  // @Transactional
+  @Scheduled(cron = "*/59 * * * * *")
+  @Transactional
   public String sendSimpleEmail() {
     this.subscriberService.sendSubscribersEmailJobs();
     return "Send email successful";

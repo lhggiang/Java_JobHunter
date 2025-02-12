@@ -1,6 +1,9 @@
 package vn.hoanggiang.jobhunter.service;
 
+import java.io.IOException;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +19,7 @@ import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
 import com.turkraft.springfilter.parser.node.FilterNode;
 
+import org.springframework.web.client.RestTemplate;
 import vn.hoanggiang.jobhunter.domain.Job;
 import vn.hoanggiang.jobhunter.domain.Resume;
 import vn.hoanggiang.jobhunter.domain.User;
@@ -42,6 +46,10 @@ public class ResumeService {
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
+
+    private static final String API_URL = "https://api.openai.com/v1/chat/completions";
+    private static final String API_KEY = "AIzaSyACNx7YTLjN68pLZEg3Dm0Ns5iFNzuzn28";
+
 
     public ResumeService(
             ResumeRepository resumeRepository,
@@ -180,4 +188,22 @@ public class ResumeService {
         return rs;
     }
 
+//    public String analyzeCV(String cvContent) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + API_KEY);
+//        headers.set("Content-Type", "application/json");
+//
+//        String requestBody = "{ \"model\": \"gpt-4\", \"messages\": [{ \"role\": \"system\", \"content\": \"Đánh giá CV sau đây...\" }, { \"role\": \"user\", \"content\": \"" + cvContent + "\" }]}";
+//
+//        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, request, String.class);
+//        return response.getBody();
+//    }
+
+//    public String analyzeCV(String cvText) throws IOException, InterruptedException {
+//        String prompt = "Đánh giá CV này: " + cvText;
+//        GenerateContentResponse generateContentResponse = this.chatSession.sendMessage(prompt);
+//        return ResponseHandler.getText(generateContentResponse);
+//    }
 }

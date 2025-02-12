@@ -1,19 +1,13 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.turkraft.springfilter.boot.Filter;
 
@@ -25,7 +19,7 @@ import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/companies")
 public class CompanyController {
   private final CompanyService companyService;
 
@@ -34,7 +28,7 @@ public class CompanyController {
   }
 
   // create company
-  @PostMapping("/companies")
+  @PostMapping
   @ApiMessage("create a new company")
   public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) throws IdInvalidException {
     // check name exists or not
@@ -46,7 +40,7 @@ public class CompanyController {
   }
 
   // get all companies
-  @GetMapping("/companies")
+  @GetMapping
   @ApiMessage("fetch all companies")
   public ResponseEntity<ResultPaginationDTO> getAllCompanies(
       @Filter Specification<Company> specification, Pageable pageable) {
@@ -54,14 +48,14 @@ public class CompanyController {
   }
 
   // update company
-  @PutMapping("/companies")
+  @PutMapping
   @ApiMessage("update a company")
   public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
     return ResponseEntity.ok(this.companyService.handleUpdateCompany(company));
   }
 
   // delete a company
-  @DeleteMapping("/companies/{id}")
+  @DeleteMapping("/{id}")
   @ApiMessage("delete a company")
   public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
     this.companyService.handleDeleteCompany(id);
@@ -69,10 +63,25 @@ public class CompanyController {
   }
 
   // fetch company by id
-  @GetMapping("/companies/{id}")
+  @GetMapping("/{id}")
   @ApiMessage("fetch company by id")
   public ResponseEntity<Company> fetchCompanyById(@PathVariable long id) {
     Optional<Company> companyOptional = this.companyService.findById(id);
     return ResponseEntity.ok().body(companyOptional.get());
+  }
+
+  // save viewed company
+  @PostMapping("/view/{companyId}")
+  @ApiMessage("save viewed company")
+  public ResponseEntity<Void> saveViewedCompany(@RequestParam Long userId, @PathVariable Long companyId) {
+    companyService.saveCompanyView(userId, companyId);
+    return ResponseEntity.ok(null);
+  }
+
+  // get suggested companies
+  @GetMapping("/suggestions")
+  @ApiMessage("get suggested companies")
+  public ResponseEntity<ResultPaginationDTO> getCompanySuggestions(@RequestParam Long userId, Pageable pageable) {
+    return ResponseEntity.ok(companyService.suggestSimilarCompanies(userId, pageable));
   }
 }

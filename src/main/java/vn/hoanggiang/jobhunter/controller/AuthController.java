@@ -1,5 +1,7 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import jakarta.mail.MessagingException;
+import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +18,14 @@ import vn.hoanggiang.jobhunter.domain.Role;
 import vn.hoanggiang.jobhunter.domain.User;
 import vn.hoanggiang.jobhunter.domain.request.ExchangeTokenRequest;
 import vn.hoanggiang.jobhunter.domain.request.ReqLoginDTO;
+import vn.hoanggiang.jobhunter.domain.request.ResetPasswordDTO;
 import vn.hoanggiang.jobhunter.domain.response.ExchangeTokenResponse;
 import vn.hoanggiang.jobhunter.domain.response.OutboundUserResponse;
 import vn.hoanggiang.jobhunter.domain.response.ResLoginDTO;
 import vn.hoanggiang.jobhunter.domain.response.user.ResCreateUserDTO;
 import vn.hoanggiang.jobhunter.repository.OutboundIdentityClient;
 import vn.hoanggiang.jobhunter.repository.OutboundUserClient;
+import vn.hoanggiang.jobhunter.service.EmailService;
 import vn.hoanggiang.jobhunter.service.UserService;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
@@ -43,6 +47,8 @@ public class AuthController {
     private final OutboundUserClient outboundUserClient;
     private final OutboundIdentityClient outboundIdentityClient;
 
+    private final EmailService emailService;
+
     @Value("${hoanggiang.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
@@ -61,13 +67,15 @@ public class AuthController {
                           SecurityUtil securityUtil, UserService userService,
                           PasswordEncoder passwordEncoder,
                           OutboundIdentityClient outboundIdentityClient,
-                          OutboundUserClient outboundUserClient) {
+                          OutboundUserClient outboundUserClient,
+                          EmailService emailService) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.securityUtil = securityUtil;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.outboundIdentityClient = outboundIdentityClient;
         this.outboundUserClient = outboundUserClient;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -119,7 +127,7 @@ public class AuthController {
                 .maxAge(refreshTokenExpiration)
                 .build();
 
-        log.info("Login Successfully");
+
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
@@ -206,7 +214,7 @@ public class AuthController {
     @PostMapping("/logout")
     @ApiMessage("logout User")
     public ResponseEntity<Void> logout() throws IdInvalidException {
-        String email = SecurityUtil.getCurrentUserLogin().orElse(null);
+        String email = SecurityUtil.getCurrentUserLogin().orElse("");
 
         if (email.equals("")) {
             throw new IdInvalidException("Access Token không hợp lệ");
@@ -316,4 +324,63 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
                 .body(res);
     }
+
+    // change password
+    @PostMapping("/change-password")
+    @ApiMessage("change password")
+    public ResponseEntity<String> changePassword(@RequestBody @Valid ResetPasswordDTO request) throws IdInvalidException{
+        log.info("Change password");
+
+        // check password and confirmPassword similar or not
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new IdInvalidException("Passwords do not match");
+        }
+
+        String email = SecurityUtil.getCurrentUserLogin().orElse("");
+
+        // get user
+        User user = this.userService.handleGetUserByUsername(email);
+
+        String hashPassword = this.passwordEncoder.encode(request.getPassword());
+        user.setPassword(hashPassword);
+
+        // save user
+        this.userService.handleCreateUser(user);
+
+        log.info("Change password successfully");
+
+        return ResponseEntity.status(HttpStatus.OK).body("Change password successfully");
+    }
+
+    // forgot password
+    @PostMapping("/forgot-password")
+    @ApiMessage("forgot password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) throws IdInvalidException, MessagingException {
+        log.info("Forgot password");
+
+        User user = this.userService.handleGetUserByUsername(email);
+
+        if(user == null){
+            throw new IdInvalidException("Email does not exist");
+        }
+
+        ResLoginDTO res = new ResLoginDTO();
+
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+                user.getId(), user.getEmail(), user.getName(), user.getRole());
+        res.setUser(userLogin);
+
+        // create a token
+        String access_token = this.securityUtil.createAccessToken(email, res);
+
+        String resetLink = "http://localhost:4173/change-password/token=" + access_token;
+
+        this.emailService.sendResetPasswordEmail(email, resetLink);
+
+        log.info("--> Reset link sent to email: {}", email);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Please check your email to reset your password.");
+    }
+
+
 }

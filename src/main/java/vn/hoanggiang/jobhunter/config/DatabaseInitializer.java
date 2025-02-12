@@ -41,6 +41,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         if (countPermissions == 0) {
             ArrayList<Permission> arr = new ArrayList<>();
+            arr.add(new Permission("View a company", "/api/v1/companies/view/{id}", "POST", "COMPANIES"));
+            arr.add(new Permission("Suggest companies", "/api/v1/companies/suggestions", "GET", "COMPANIES"));
             arr.add(new Permission("Create a company", "/api/v1/companies", "POST", "COMPANIES"));
             arr.add(new Permission("Update a company", "/api/v1/companies", "PUT", "COMPANIES"));
             arr.add(new Permission("Delete a company", "/api/v1/companies/{id}", "DELETE", "COMPANIES"));
@@ -59,6 +61,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Create a resume", "/api/v1/resumes", "POST", "RESUMES"));
             arr.add(new Permission("Update a resume", "/api/v1/resumes", "PUT", "RESUMES"));
             arr.add(new Permission("Delete a resume", "/api/v1/resumes/{id}", "DELETE", "RESUMES"));
+            arr.add(new Permission("Analyze a resume", "/api/v1/resumes/analyze", "POST", "RESUMES"));
             arr.add(new Permission("Get a resume by id", "/api/v1/resumes/{id}", "GET", "RESUMES"));
             arr.add(new Permission("Get resumes with pagination", "/api/v1/resumes", "GET", "RESUMES"));
             arr.add(new Permission("Create a role", "/api/v1/roles", "POST", "ROLES"));

@@ -52,7 +52,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
           boolean isAllow = permissions.stream().anyMatch(item -> item.getApiPath().equals(path)
               && item.getMethod().equals(httpMethod));
 
-          if (isAllow == false) {
+          if (!isAllow) {
             throw new PermissionException("Bạn không có quyền truy cập endpoint này.");
           }
         } else {

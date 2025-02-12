@@ -18,14 +18,11 @@ public class EmailService {
 
   private final JavaMailSender javaMailSender;
   private final SpringTemplateEngine templateEngine;
-  private final JobRepository jobRepository;
 
   public EmailService(JavaMailSender javaMailSender,
-      SpringTemplateEngine templateEngine,
-      JobRepository jobRepository) {
+      SpringTemplateEngine templateEngine) {
     this.javaMailSender = javaMailSender;
     this.templateEngine = templateEngine;
-    this.jobRepository = jobRepository;
   }
 
   public void sendEmailSync(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
@@ -56,6 +53,18 @@ public class EmailService {
 
     String content = templateEngine.process(templateName, context);
     this.sendEmailSync(to, subject, content, false, true);
+  }
+
+  public void sendResetPasswordEmail(String to, String resetLink) throws MessagingException {
+    MimeMessage message = javaMailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+    helper.setTo(to);
+    helper.setSubject("Reset Your Password");
+    helper.setText("<p>Click vào đường link dưới đây để đặt lại mật khẩu:</p>" +
+            "<a href=\"" + resetLink + "\">Đổi mật khẩu</a>", true);
+
+    javaMailSender.send(message);
   }
 
 }

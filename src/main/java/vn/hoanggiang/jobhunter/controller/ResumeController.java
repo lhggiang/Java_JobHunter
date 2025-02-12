@@ -1,24 +1,28 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 import com.turkraft.springfilter.boot.Filter;
 import com.turkraft.springfilter.builder.FilterBuilder;
 import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 
 import jakarta.validation.Valid;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import vn.hoanggiang.jobhunter.config.CVProcessor;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 import vn.hoanggiang.jobhunter.domain.Company;
 import vn.hoanggiang.jobhunter.domain.Job;
@@ -32,8 +36,6 @@ import vn.hoanggiang.jobhunter.service.ResumeService;
 import vn.hoanggiang.jobhunter.service.UserService;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/v1/resumes")
@@ -146,5 +148,29 @@ public class ResumeController {
     @ApiMessage("get list resumes by user")
     public ResponseEntity<ResultPaginationDTO> fetchResumeByUser(Pageable pageable) {
         return ResponseEntity.ok().body(this.resumeService.fetchResumeByUser(pageable));
+    }
+
+    @PostMapping("/analyze")
+    public ResponseEntity<?> analyzeCV(@RequestParam("file") MultipartFile file, @RequestParam String jobDesc) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8000/analyze";
+
+        File tempFile = File.createTempFile("cv_", ".pdf");
+        file.transferTo(tempFile);
+        String content = CVProcessor.extractText(tempFile);
+
+        // Tạo payload JSON
+        Map<String, String> payload = new HashMap<>();
+        payload.put("cv_text", content);
+        payload.put("job_desc", jobDesc);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(payload, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+        return ResponseEntity.ok().body(response);
     }
 }

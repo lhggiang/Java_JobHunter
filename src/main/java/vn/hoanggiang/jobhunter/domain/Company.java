@@ -35,6 +35,8 @@ public class Company {
 
     private String address;
 
+    private String industry;
+
     private String logo;
 
     private Instant createdAt;
