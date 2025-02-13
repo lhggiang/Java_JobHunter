@@ -27,8 +27,7 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - Authentication: JWT, OAuth2 
 - Logging: ELK (Elaticsearch, Logstash, Kibana)
 - Caching data: Redis
-- Quản lý API Swagger
-- Postman, Lombok, SonarQube
+- Quản lý API Swagger, Postman, Lombok
 - Testing: JUnit 5, Mockito
 
 📌 **Frontend**: 
@@ -85,6 +84,27 @@ Sử dụng kiến thức của **Spring Data JPA** và **JPQL (Java Persistence
 - Thống kê tổng số lượng company, job, subscriber, các loại resume:
 ![image](https://github.com/user-attachments/assets/776ab1c3-a9ed-491d-8f25-d3d79c599932)
 
+### ✅ Tích hợp AI để đánh giá sự phù hợp giữa CV và Job Description
+Sử dụng ngôn ngữ **Python** để triển khai các kiến thức:
+- **FastAPI** - một framework mạnh mẽ và hiệu suất cao để xây dựng API.
+- **Sentence Transformers** - tính toán mức độ tương đồng văn bản.
+- **nltk (Natural Language Toolkit)** - tiền xử lý văn bản (stopwords, loại bỏ dấu câu).
+- **String Manipulation** - chuẩn hóa dữ liệu đầu vào.
+- **Pattern Matching** - so sánh kỹ năng CV và JD.
+- **Cosine Similarity** - đánh giá mức độ phù hợp giữa CV và JD.
 
+![image](https://github.com/user-attachments/assets/b4b9ae04-7b65-4960-a440-34b3e224f5e5)
+![image](https://github.com/user-attachments/assets/26f1747d-d022-459c-a836-d6d744029345)
 
+--> So sánh độ tương đồng giữa CV và Job Description cao nhất là 0.42 và trung bình giữa các lần là 0.12. Đưa ra đánh giá “Low match” (so sánh dựa vào mốc 0.5).
+
+--> Dựa vào danh sách skills của hệ thống (cv_skills) để so sánh độ tương đồng skills trong CV và Job Description thì độ trùng khớp là 100%.
+
+### ✅ Quản lý API với Swagger
+- Quản lý API với Swagger giúp thiết kế, tài liệu hóa, kiểm thử và tương tác với API trong hệ thống một cách dễ dàng.
   
+![image](https://github.com/user-attachments/assets/bb378973-840b-4e9e-84ed-c3e66261d19b)
+
+## 🔧 HẠN CHẾ CỦA ỨNG DỤNG
+- Chức năng đánh giá CV sử dụng AI còn hạn chế trong trường hợp các từ đồng nghĩa và CV được viết bằng Tiếng Việt.
+
