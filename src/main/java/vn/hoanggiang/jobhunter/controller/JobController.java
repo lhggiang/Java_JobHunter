@@ -1,18 +1,13 @@
 package vn.hoanggiang.jobhunter.controller;
 
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.Job;
@@ -24,7 +19,7 @@ import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/jobs")
 public class JobController {
     private final JobService jobService;
 
@@ -33,7 +28,7 @@ public class JobController {
     }
 
     // create job
-    @PostMapping("/jobs")
+    @PostMapping
     @ApiMessage("create a job")
     public ResponseEntity<ResCreateJobDTO> createJob(@Valid @RequestBody Job job) {
         Job currentJob = this.jobService.createJob(job);
@@ -42,7 +37,7 @@ public class JobController {
     }
 
     // update job
-    @PutMapping("/jobs")
+    @PutMapping
     @ApiMessage("update a job")
     public ResponseEntity<ResUpdateJobDTO> updateJob(@Valid @RequestBody Job job) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(job.getId());
@@ -55,7 +50,7 @@ public class JobController {
     }
 
     // delete job
-    @DeleteMapping("/jobs/{id}")
+    @DeleteMapping("/{id}")
     @ApiMessage("delete a job by id")
     public ResponseEntity<Void> deleteJob(@PathVariable long id) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(id);
@@ -67,7 +62,7 @@ public class JobController {
     }
 
     // fetch job by id
-    @GetMapping("/jobs/{id}")
+    @GetMapping("/{id}")
     @ApiMessage("fetch a job by id")
     public ResponseEntity<Job> getJob(@PathVariable long id) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(id);
@@ -78,11 +73,12 @@ public class JobController {
     }
 
     // fetch all jobs
-    @GetMapping("/jobs")
+    @GetMapping
     @ApiMessage("fetch job with pagination")
     public ResponseEntity<ResultPaginationDTO> getAllJobs(
             @Filter Specification<Job> spec,
             Pageable pageable) {
         return ResponseEntity.ok().body(this.jobService.fetchAllJobs(spec, pageable));
     }
+
 }

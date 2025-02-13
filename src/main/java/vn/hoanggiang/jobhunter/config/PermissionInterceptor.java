@@ -40,10 +40,10 @@ public class PermissionInterceptor implements HandlerInterceptor {
     // System.out.println(">>> requestURI= " + requestURI);
 
     // check permission
-    String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+    String email = SecurityUtil.getCurrentUserLogin().isPresent()
         ? SecurityUtil.getCurrentUserLogin().get()
         : "";
-    if (email != null && !email.isEmpty()) {
+    if (!email.isEmpty()) {
       User user = this.userService.handleGetUserByUsername(email);
       if (user != null) {
         Role role = user.getRole();

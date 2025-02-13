@@ -47,10 +47,6 @@ public class ResumeService {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
 
-    private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "AIzaSyACNx7YTLjN68pLZEg3Dm0Ns5iFNzuzn28";
-
-
     public ResumeService(
             ResumeRepository resumeRepository,
             UserRepository userRepository,
