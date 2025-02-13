@@ -62,4 +62,29 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 ## 📞 Tác giả:
 - La Hoàng Giang (Xây dựng Backend) - Đồng tác giả https://github.com/lhggiang
 - Trần Đặng Mỹ Phương (Xây dựng Frontend) - Đồng tác giả https://github.com/peonymyx
+
+## 🔥 DEMO CHỨC NĂNG ỨNG DỤNG QUA POSTMAN
+
+### ✅ Thống kê và báo cáo
+Sử dụng kiến thức của **Spring Data JPA** và **JPQL (Java Persistence Query Language)** truy vấn dữ liệu.
+
+![image](https://github.com/user-attachments/assets/9df45d06-4a93-4688-991d-2262c769ebbf)
+
+- Thống kê số lượng job, resume, subscriber theo ngày:
+![image](https://github.com/user-attachments/assets/3d1f23bb-0dba-4bea-9232-9032096b0cd8)
+
+- Thống kê số lượng job, resume, subscriber theo tháng:
+![image](https://github.com/user-attachments/assets/0895817d-95b6-4b3f-8bd7-d25dabd3f7d2)
+
+- Thống kê số lượng job, resume, subscriber theo năm:
+![image](https://github.com/user-attachments/assets/31ae3a76-fd09-4801-9a6d-e536a17f6e39)
+
+- Thống kê số lượng subscriber theo skills:
+![image](https://github.com/user-attachments/assets/c371e128-7aec-43a5-be80-878d55ee482d)
+
+- Thống kê tổng số lượng company, job, subscriber, các loại resume:
+![image](https://github.com/user-attachments/assets/776ab1c3-a9ed-491d-8f25-d3d79c599932)
+
+
+
   
