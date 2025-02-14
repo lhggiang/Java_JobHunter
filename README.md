@@ -105,6 +105,11 @@ Sử dụng ngôn ngữ **Python** để triển khai các kiến thức:
   
 ![image](https://github.com/user-attachments/assets/bb378973-840b-4e9e-84ed-c3e66261d19b)
 
+### ✅ Quản lý log với ELK 
+- Sử dụng ELK (Elasticsearch, Logstash, Kibana) để quản lý log giúp thu thập, xử lý, lưu trữ và trực quan hóa dữ liệu log một cách hiệu quả, hỗ trợ giám sát hệ thống, phân tích lỗi và tối ưu hiệu suất.
+
+![image](https://github.com/user-attachments/assets/33ce27ff-7aa7-476d-b4ee-41d4494519f6)
+
 ## 🔧 HẠN CHẾ CỦA ỨNG DỤNG
 - Chức năng đánh giá CV sử dụng AI còn hạn chế trong trường hợp các từ đồng nghĩa và CV được viết bằng Tiếng Việt.
 
