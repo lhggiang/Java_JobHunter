@@ -48,7 +48,6 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             return body;
         }
 
-
         // case: error
         if (status >= 400) {
             // already custom in file GlobalException

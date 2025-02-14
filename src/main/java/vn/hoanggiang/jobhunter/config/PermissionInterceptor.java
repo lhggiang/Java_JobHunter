@@ -15,7 +15,6 @@ import vn.hoanggiang.jobhunter.domain.Role;
 import vn.hoanggiang.jobhunter.domain.User;
 import vn.hoanggiang.jobhunter.service.UserService;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
-import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 import vn.hoanggiang.jobhunter.util.error.PermissionException;
 
 @Component
@@ -53,10 +52,10 @@ public class PermissionInterceptor implements HandlerInterceptor {
               && item.getMethod().equals(httpMethod));
 
           if (!isAllow) {
-            throw new PermissionException("Bạn không có quyền truy cập endpoint này.");
+            throw new PermissionException("Errors...");
           }
         } else {
-          throw new PermissionException("Bạn không có quyền truy cập endpoint này.");
+          throw new PermissionException("Errors...");
         }
       }
     }

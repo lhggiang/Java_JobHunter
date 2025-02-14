@@ -29,7 +29,6 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
-    // create a permission
     @PostMapping
     @ApiMessage("create a permission")
     public ResponseEntity<Permission> createPermission(@Valid @RequestBody Permission permission)
@@ -43,36 +42,33 @@ public class PermissionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.permissionService.createPermission(permission));
     }
 
-    // update a permission
     @PutMapping
     @ApiMessage("update a permission")
     public ResponseEntity<Permission> updatePermission(@Valid @RequestBody Permission permission)
             throws IdInvalidException {
         // check exist by id
         if (this.permissionService.fetchById(permission.getId()) == null) {
-            throw new IdInvalidException("Permission với id = " + permission.getId() + " không tồn tại.");
+            throw new IdInvalidException("Permission with id = " + permission.getId() + " does not exist.");
         }
         // check exist by module, apiPath and method
         if (this.permissionService.isPermissionExist(permission)) {
-            throw new IdInvalidException("Permission đã tồn tại.");
+            throw new IdInvalidException("Permission already exists.");
         }
         // update permission
         return ResponseEntity.ok().body(this.permissionService.updatePermission(permission));
     }
 
-    // delete a permission
     @DeleteMapping("/{id}")
     @ApiMessage("delete a permission")
     public ResponseEntity<Void> deletePermission(@PathVariable("id") long id) throws IdInvalidException {
         // check exist by id
         if (this.permissionService.fetchById(id) == null) {
-            throw new IdInvalidException("Permission với id = " + id + " không tồn tại.");
+            throw new IdInvalidException("Permission with id = " + id + " does not exist.");
         }
         this.permissionService.deletePermission(id);
         return ResponseEntity.ok().body(null);
     }
 
-    // fetch permissions
     @GetMapping
     @ApiMessage("fetch permissions")
     public ResponseEntity<ResultPaginationDTO> getPermissions(

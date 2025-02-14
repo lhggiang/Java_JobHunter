@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,6 +17,7 @@ import vn.hoanggiang.jobhunter.repository.PermissionRepository;
 import vn.hoanggiang.jobhunter.repository.RoleRepository;
 
 @Service
+@Slf4j
 public class RoleService {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
@@ -27,12 +29,10 @@ public class RoleService {
         this.permissionRepository = permissionRepository;
     }
 
-    // check name exists or not
     public boolean existByName(String name) {
         return this.roleRepository.existsByName(name);
     }
 
-    // create a role
     public Role createRole(Role role) {
         // check permissions sent exists or not
         if (role.getPermissions() != null) {
@@ -43,17 +43,20 @@ public class RoleService {
             List<Permission> dbPermissions = this.permissionRepository.findByIdIn(reqPermissions);
             role.setPermissions(dbPermissions);
         }
+
+        log.info("Create role {} successfully", role.getName());
         return this.roleRepository.save(role);
     }
 
-    // fetch role by id
     public Role fetchById(long id) {
         Optional<Role> roleOptional = this.roleRepository.findById(id);
+        log.info("Fetch role with {} successfully", id);
         return roleOptional.orElse(null);
     }
 
     // fetch role by name
     public Role fetchByName(String name) {
+        log.info("Fetch role with {} successfully", name);
         return this.roleRepository.findByName(name);
     }
 
@@ -64,7 +67,7 @@ public class RoleService {
         // check permissions
         if (role.getPermissions() != null) {
             List<Long> reqPermissions = role.getPermissions()
-                    .stream().map(x -> x.getId())
+                    .stream().map(Permission::getId)
                     .collect(Collectors.toList());
             List<Permission> dbPermissions = this.permissionRepository.findByIdIn(reqPermissions);
             role.setPermissions(dbPermissions);
@@ -77,15 +80,16 @@ public class RoleService {
 
         roleDB = this.roleRepository.save(roleDB);
 
+        log.info("Update role {} successfully", role.getName());
         return roleDB;
     }
 
     // delete a role
     public void deleteRole(long id) {
+        log.info("Delete role with {} successfully", id);
         this.roleRepository.deleteById(id);
     }
 
-    // get all roles
     public ResultPaginationDTO getRoles(Specification<Role> spec, Pageable pageable) {
         Page<Role> pRole = this.roleRepository.findAll(spec, pageable);
 
@@ -100,6 +104,7 @@ public class RoleService {
         rs.setMeta(mt);
         rs.setResult(pRole.getContent());
 
+        log.info("Fetch all roles successfully");
         return rs;
     }
 }

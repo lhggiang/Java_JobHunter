@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.hoanggiang.jobhunter.service.StatisticsService;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,32 +23,32 @@ public class StatisticsController {
     }
 
     @GetMapping("/daily")
-    @ApiMessage("Statistics by day")
+    @ApiMessage("statistics by day")
     //Convert date value from string (String) in request to LocalDate
     public ResponseEntity<Map<String, Long>> getDailyStats(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok(statisticsService.getDailyStats(date));
     }
 
     @GetMapping("/monthly")
-    @ApiMessage("Statistics by month")
+    @ApiMessage("statistics by month")
     public ResponseEntity<Map<String, Long>> getMonthlyStats(@RequestParam int year, @RequestParam int month) {
         return ResponseEntity.ok(statisticsService.getMonthlyStats(year, month));
     }
 
     @GetMapping("/yearly")
-    @ApiMessage("Statistics by year")
+    @ApiMessage("statistics by year")
     public ResponseEntity<Map<String, Long>> getYearlyStats(@RequestParam int year) {
         return ResponseEntity.ok(statisticsService.getYearlyStats(year));
     }
 
     @GetMapping("/subscribers-skills")
-    @ApiMessage("Subscriber statistics by skill")
+    @ApiMessage("subscriber statistics by skill")
     public ResponseEntity<Map<String, Long>> getSubscribersBySkill() {
         return ResponseEntity.ok(statisticsService.getSubscribersBySkill());
     }
 
     @GetMapping("/overall")
-    @ApiMessage("General statistics")
+    @ApiMessage("general statistics")
     public ResponseEntity<Map<String, Long>> getOverview() {
         return ResponseEntity.ok(statisticsService.getOverallStatistics());
     }

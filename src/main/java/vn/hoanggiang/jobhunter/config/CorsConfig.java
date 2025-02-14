@@ -14,24 +14,24 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // cho phép các URL nào có thể kết nối tới backend
+        // allows which URLs can connect to the backend
         configuration.setAllowedOrigins(
                 Arrays.asList("http://localhost:3000", "http://localhost:4173", "http://localhost:5173"));
 
-        // các method nào đc kết nối
+        // which methods are connected?
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // các phần header được phép gửi lên
+        // headers allowed to be sent
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "x-no-retry"));
 
-        // gửi kèm cookies hay không
+        // send cookies or not
         configuration.setAllowCredentials(true);
 
-        // thời gian pre-flight request có thể cache (tính theo seconds)
+        // cacheable pre-flight request time (in seconds)
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // cấu hình cors cho tất cả api
+        // cors configuration for all api
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }

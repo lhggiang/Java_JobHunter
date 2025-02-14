@@ -30,16 +30,16 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "name cannot be empty")
+    @NotBlank(message = "name cannot be blank")
     private String name;
 
-    @NotBlank(message = "apiPath cannot be empty")
+    @NotBlank(message = "apiPath cannot be blank")
     private String apiPath;
 
-    @NotBlank(message = "method cannot be empty")
+    @NotBlank(message = "method cannot be blank")
     private String method;
 
-    @NotBlank(message = "module cannot be empty")
+    @NotBlank(message = "module cannot be blank")
     private String module;
 
     private Instant createdAt;

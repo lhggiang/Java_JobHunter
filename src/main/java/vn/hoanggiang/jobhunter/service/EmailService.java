@@ -61,8 +61,8 @@ public class EmailService {
 
     helper.setTo(to);
     helper.setSubject("Reset Your Password");
-    helper.setText("<p>Click vào đường link dưới đây để đặt lại mật khẩu:</p>" +
-            "<a href=\"" + resetLink + "\">Đổi mật khẩu</a>", true);
+    helper.setText("<p>Click the link below to reset your password.:</p>" +
+            "<a href=\"" + resetLink + "\">Reset password</a>", true);
 
     javaMailSender.send(message);
   }

@@ -1,7 +1,6 @@
 package vn.hoanggiang.jobhunter.controller;
 
 import jakarta.mail.MessagingException;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -80,19 +79,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
-        // tạo một token xác thực với thông tin username và password từ loginDTO
+        // create an authentication token with username and password information from loginDTO
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsername(), loginDTO.getPassword());
 
-        // authenticationManagerBuilder sẽ gọi đến UserDetailsService để tìm kiếm thông
-        // tin người dùng từ cơ sở dữ liệu (loadUserByUsername)
+        // authenticationManagerBuilder will call UserDetailsService to look up user information from database (loadUserByUsername)
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        // lưu trữ thông tin xác thực vào SecurityContext để sử dụng cho các request
+        // store authentication information in SecurityContext for use in requests
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // instead getting from principal, we get data from query in order to return FE
-        // response of login
+        // instead of getting from principal, we get data from query in order to return FE response of login
         ResLoginDTO res = new ResLoginDTO();
 
         User currentUserDB = this.userService.handleGetUserByUsername(loginDTO.getUsername());
@@ -118,17 +115,16 @@ public class AuthController {
         // save refresh toke into cookie
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refresh_token)
-                // cookie chỉ được truy cập bởi server, tránh lộ thông tin qua JavaScript
+                // cookies are only accessed by the server, avoiding information disclosure via JavaScript
                 .httpOnly(true)
-                // chỉ gửi cookie qua HTTPS
+                // send cookies over HTTPS only
                 .secure(true)
                 // url set cookie
                 .path("/")
                 .maxAge(refreshTokenExpiration)
                 .build();
 
-
-
+        log.info("User {} login succesfully", authentication.getName());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
                 .body(res);
@@ -152,7 +148,7 @@ public class AuthController {
 
             userGetAccount.setUser(userLogin);
         }
-
+        log.info("Fetch account {}", email);
         return ResponseEntity.ok().body(userGetAccount);
     }
 
@@ -161,7 +157,7 @@ public class AuthController {
     public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException {
         if (refresh_token.equals("abc")) {
-            throw new IdInvalidException("Bạn không có refresh token ở cookie");
+            throw new IdInvalidException("You do not have a refresh token in your cookie.");
         }
 
         // check valid
@@ -170,7 +166,7 @@ public class AuthController {
         // check user by token + email
         User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
         if (currentUser == null) {
-            throw new IdInvalidException("Refresh Token không hợp lệ");
+            throw new IdInvalidException("Refresh Token is invalid");
         }
 
         ResLoginDTO res = new ResLoginDTO();
@@ -194,14 +190,11 @@ public class AuthController {
         this.userService.updateUserToken(refresh_token, email);
 
         // set cookies
-        // tạo Refresh Token và lưu vào cookie
+        // generate Refresh Token and save to cookie
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", new_refresh_token)
-                // cookie chỉ được truy cập bởi server, tránh lộ thông tin qua JavaScript
                 .httpOnly(true)
-                // chỉ gửi cookie qua HTTPS
                 .secure(true)
-                // url set cookie
                 .path("/")
                 .maxAge(refreshTokenExpiration)
                 .build();
@@ -217,7 +210,7 @@ public class AuthController {
         String email = SecurityUtil.getCurrentUserLogin().orElse("");
 
         if (email.equals("")) {
-            throw new IdInvalidException("Access Token không hợp lệ");
+            throw new IdInvalidException("Invalid Access Token");
         }
 
         // update refresh token = null
@@ -232,6 +225,7 @@ public class AuthController {
                 .maxAge(0)
                 .build();
 
+        log.info("User {} logout",email);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
                 .body(null);
@@ -244,13 +238,15 @@ public class AuthController {
         boolean isEmailExist = this.userService.isEmailExist(reqUser.getEmail());
         if (isEmailExist) {
             throw new IdInvalidException(
-                    "Email " + reqUser.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+                    "Email " + reqUser.getEmail() + "already exists, please use another email.");
         }
 
         String hashPassword = this.passwordEncoder.encode(reqUser.getPassword());
         reqUser.setPassword(hashPassword);
 
         User user = this.userService.handleCreateUser(reqUser);
+
+        log.info("User {} register a new account", user.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(user));
     }
 
@@ -273,7 +269,7 @@ public class AuthController {
         boolean isEmailExist = this.userService.isEmailExist(userInfo.getEmail());
         if (isEmailExist) {
             throw new IdInvalidException(
-                    "Email " + userInfo.getEmail() + "đã tồn tại, vui lòng sử dụng email khác.");
+                    "Email " + userInfo.getEmail() + "already exists, please use another email.");
         }
 
         User user = new User();
@@ -311,14 +307,13 @@ public class AuthController {
         // save refresh toke into cookie
         ResponseCookie resCookies = ResponseCookie
                 .from("refresh_token", refresh_token)
-                // cookie chỉ được truy cập bởi server, tránh lộ thông tin qua JavaScript
                 .httpOnly(true)
-                // chỉ gửi cookie qua HTTPS
                 .secure(true)
-                // url set cookie
                 .path("/")
                 .maxAge(refreshTokenExpiration)
                 .build();
+
+        log.info("User {} login with google", user.getName());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
@@ -347,7 +342,7 @@ public class AuthController {
         // save user
         this.userService.handleCreateUser(user);
 
-        log.info("Change password successfully");
+        log.info("User {} change password successfully",email);
 
         return ResponseEntity.status(HttpStatus.OK).body("Change password successfully");
     }

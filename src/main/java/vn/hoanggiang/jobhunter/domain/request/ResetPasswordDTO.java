@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResetPasswordDTO {
-    @NotBlank(message = "password must be not blank")
+    @NotBlank(message = "password cannot be blank")
     private String password;
 
-    @NotBlank(message = "confirmPassword must be not blank")
+    @NotBlank(message = "confirmPassword cannot be blank")
     private String confirmPassword;
 }

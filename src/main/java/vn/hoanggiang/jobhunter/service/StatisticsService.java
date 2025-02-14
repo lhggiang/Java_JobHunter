@@ -1,5 +1,6 @@
 package vn.hoanggiang.jobhunter.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import vn.hoanggiang.jobhunter.repository.*;
 import vn.hoanggiang.jobhunter.util.constant.ResumeStateEnum;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class StatisticsService {
     private final JobRepository jobRepository;
     private final ResumeRepository resumeRepository;
@@ -37,6 +39,7 @@ public class StatisticsService {
         Instant start = date.atStartOfDay(ZoneOffset.UTC).toInstant();
         Instant end = date.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().minusNanos(1);
 
+        log.info("Get daily statistics successfully");
         return Map.of(
                 "jobs", jobRepository.countByCreatedAtBetween(start, end),
                 "resumes", resumeRepository.countByCreatedAtBetween(start, end),
@@ -51,6 +54,7 @@ public class StatisticsService {
         Instant start = firstDay.atStartOfDay(ZoneOffset.UTC).toInstant();
         Instant end = lastDay.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().minusNanos(1);
 
+        log.info("Get monthly statistics successfully");
         return Map.of(
                 "jobs", jobRepository.countByCreatedAtBetween(start, end),
                 "resumes", resumeRepository.countByCreatedAtBetween(start, end),
@@ -65,6 +69,7 @@ public class StatisticsService {
         Instant start = firstDay.atStartOfDay(ZoneOffset.UTC).toInstant();
         Instant end = lastDay.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().minusNanos(1);
 
+        log.info("Get yearly statistics successfully");
         return Map.of(
                 "jobs", jobRepository.countByCreatedAtBetween(start, end),
                 "resumes", resumeRepository.countByCreatedAtBetween(start, end),
@@ -73,6 +78,8 @@ public class StatisticsService {
     }
 
     public Map<String, Long> getSubscribersBySkill() {
+
+        log.info("Get subscriber by skills successfully");
         return subscriberRepository.countSubscribersBySkill().stream()
                 .collect(Collectors.toMap(
                         e -> "subscriber_" + (String) e[0],
@@ -100,6 +107,7 @@ public class StatisticsService {
             statistics.put("cv_" + status.name(), count);
         }
 
+        log.info("Get overall statistics successfully");
         return statistics;
     }
 

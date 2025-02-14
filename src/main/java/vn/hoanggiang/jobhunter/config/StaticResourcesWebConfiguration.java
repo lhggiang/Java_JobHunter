@@ -14,8 +14,8 @@ public class StaticResourcesWebConfiguration
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // url nào bắt đầu /storage/** sẽ được tìm trong thư mục basePath
-        // VD: /storage/abc.jpg sẽ tìm abc.jpg trong thư mục basePath
+        // Any url starting with /storage/** will be searched in the basePath directory
+        // Ex: /storage/abc.jpg will find abc.jpg in the basePath directory
         registry.addResourceHandler("/storage/**")
                 .addResourceLocations(basePath);
     }

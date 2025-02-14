@@ -27,10 +27,10 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "email không được để trống")
+    @NotBlank(message = "email cannot be blank")
     private String email;
 
-    @NotBlank(message = "url không được để trống (upload cv chưa thành công)")
+    @NotBlank(message = "url cannot be empty (cv upload failed)")
     private String url;
 
     @Enumerated(EnumType.STRING)
@@ -39,7 +39,6 @@ public class Resume {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-    private String companyName;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

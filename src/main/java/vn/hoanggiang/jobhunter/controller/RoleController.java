@@ -29,13 +29,12 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    // create a role
     @PostMapping
     @ApiMessage("create a role")
     public ResponseEntity<Role> createRole(@Valid @RequestBody Role role) throws IdInvalidException {
         // check name
         if (this.roleService.existByName(role.getName())) {
-            throw new IdInvalidException("Role với name = " + role.getName() + " đã tồn tại");
+            throw new IdInvalidException("Role with name = " + role.getName() + " already exists.");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.createRole(role));
     }
@@ -46,7 +45,7 @@ public class RoleController {
     public ResponseEntity<Role> updateRole(@Valid @RequestBody Role role) throws IdInvalidException {
         // check id
         if (this.roleService.fetchById(role.getId()) == null) {
-            throw new IdInvalidException("Role với id = " + role.getId() + " không tồn tại");
+            throw new IdInvalidException("Role with id = " + role.getId() + " does not exist.");
         }
 
         return ResponseEntity.ok().body(this.roleService.updateRole(role));
@@ -58,14 +57,13 @@ public class RoleController {
     public ResponseEntity<Void> delete(@PathVariable("id") long id) throws IdInvalidException {
         // check id
         if (this.roleService.fetchById(id) == null) {
-            throw new IdInvalidException("Role với id = " + id + " không tồn tại");
+            throw new IdInvalidException("Role with id = " + id + " does not exist.");
         }
 
         this.roleService.deleteRole(id);
         return ResponseEntity.ok().body(null);
     }
 
-    // get all roles
     @GetMapping
     @ApiMessage("fetch roles")
     public ResponseEntity<ResultPaginationDTO> getPermissions(
@@ -73,13 +71,12 @@ public class RoleController {
         return ResponseEntity.ok(this.roleService.getRoles(spec, pageable));
     }
 
-    // get role by id
     @GetMapping("/{id}")
     @ApiMessage("fetch role by id")
     public ResponseEntity<Role> getById(@PathVariable("id") long id) throws IdInvalidException {
         Role role = this.roleService.fetchById(id);
         if (role == null) {
-            throw new IdInvalidException("Resume với id = " + id + " không tồn tại");
+            throw new IdInvalidException("Resume with id = " + id + " does not exist.");
         }
 
         return ResponseEntity.ok().body(role);

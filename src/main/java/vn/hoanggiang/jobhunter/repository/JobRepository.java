@@ -1,4 +1,5 @@
 package vn.hoanggiang.jobhunter.repository;
+
 import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -8,7 +9,6 @@ import vn.hoanggiang.jobhunter.domain.Job;
 import vn.hoanggiang.jobhunter.domain.Skill;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository

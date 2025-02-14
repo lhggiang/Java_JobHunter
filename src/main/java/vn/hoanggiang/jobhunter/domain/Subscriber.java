@@ -30,15 +30,16 @@ public class Subscriber {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotBlank(message = "email không được để trống")
+  @NotBlank(message = "email cannot be blank")
   private String email;
 
-  @NotBlank(message = "name không được để trống")
+  @NotBlank(message = "name cannot be blank")
   private String name;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { "subscribers" })
-  @JoinTable(name = "subscriber_skill", joinColumns = @JoinColumn(name = "subscriber_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+  @JoinTable(name = "subscriber_skill", joinColumns = @JoinColumn(name = "subscriber_id"),
+          inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private List<Skill> skills;
 
   private Instant createdAt;

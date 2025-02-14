@@ -1,6 +1,5 @@
 package vn.hoanggiang.jobhunter.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,6 @@ public class CompanyController {
     this.companyService = companyService;
   }
 
-  // create company
   @PostMapping
   @ApiMessage("create a new company")
   public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) throws IdInvalidException {
@@ -39,7 +37,6 @@ public class CompanyController {
     return ResponseEntity.status(HttpStatus.CREATED).body(this.companyService.handleCreateCompany(company));
   }
 
-  // get all companies
   @GetMapping
   @ApiMessage("fetch all companies")
   public ResponseEntity<ResultPaginationDTO> getAllCompanies(
@@ -47,14 +44,12 @@ public class CompanyController {
     return ResponseEntity.ok(this.companyService.handleGetCompany(specification, pageable));
   }
 
-  // update company
   @PutMapping
   @ApiMessage("update a company")
   public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
     return ResponseEntity.ok(this.companyService.handleUpdateCompany(company));
   }
 
-  // delete a company
   @DeleteMapping("/{id}")
   @ApiMessage("delete a company")
   public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
@@ -62,7 +57,6 @@ public class CompanyController {
     return ResponseEntity.ok(null);
   }
 
-  // fetch company by id
   @GetMapping("/{id}")
   @ApiMessage("fetch company by id")
   public ResponseEntity<Company> fetchCompanyById(@PathVariable long id) {
@@ -70,7 +64,6 @@ public class CompanyController {
     return ResponseEntity.ok().body(companyOptional.get());
   }
 
-  // save viewed company
   @PostMapping("/view/{companyId}")
   @ApiMessage("save viewed company")
   public ResponseEntity<Void> saveViewedCompany(@RequestParam Long userId, @PathVariable Long companyId) {
@@ -78,7 +71,6 @@ public class CompanyController {
     return ResponseEntity.ok(null);
   }
 
-  // get suggested companies
   @GetMapping("/suggestions")
   @ApiMessage("get suggested companies")
   public ResponseEntity<ResultPaginationDTO> getCompanySuggestions(@RequestParam Long userId, Pageable pageable) {

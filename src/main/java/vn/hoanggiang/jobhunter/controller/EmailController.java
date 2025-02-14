@@ -5,7 +5,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.hoanggiang.jobhunter.service.EmailService;
 import vn.hoanggiang.jobhunter.service.SubscriberService;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 
@@ -21,10 +20,9 @@ public class EmailController {
 
   @GetMapping
   @ApiMessage("Send simple email")
-  @Scheduled(cron = "*/59 * * * * *")
+  @Scheduled(cron = "0 0 22 * * *")
   @Transactional
-  public String sendSimpleEmail() {
+  public void sendEmail() {
     this.subscriberService.sendSubscribersEmailJobs();
-    return "Send email successful";
   }
 }

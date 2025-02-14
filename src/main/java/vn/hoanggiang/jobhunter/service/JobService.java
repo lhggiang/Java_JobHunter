@@ -1,11 +1,10 @@
 package vn.hoanggiang.jobhunter.service;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,10 +21,11 @@ import vn.hoanggiang.jobhunter.repository.JobRepository;
 import vn.hoanggiang.jobhunter.repository.SkillRepository;
 
 @Service
+@Slf4j
 public class JobService {
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
     public JobService(JobRepository jobRepository,
             SkillRepository skillRepository, CompanyRepository companyRepository) {
@@ -34,17 +34,16 @@ public class JobService {
         this.companyRepository = companyRepository;
     }
 
-    // fetch job by id
     public Optional<Job> fetchJobById(long id) {
+        log.info("Fetch job {} successfully", id);
         return this.jobRepository.findById(id);
     }
 
-    // create job
     public Job createJob(Job job) {
         // check skills
         if (job.getSkills() != null) {
             List<Long> reqSkills = job.getSkills()
-                    .stream().map(item -> item.getId())
+                    .stream().map(Skill::getId)
                     .collect(Collectors.toList());
             List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
             job.setSkills(dbSkills);
@@ -60,6 +59,7 @@ public class JobService {
 
         // create job
         Job currentJob = this.jobRepository.save(job);
+        log.info("Create job with {} successfully", job.getName());
         return currentJob;
     }
 
@@ -79,20 +79,19 @@ public class JobService {
 
         if (job.getSkills() != null) {
             List<String> skills = job.getSkills()
-                    .stream().map(item -> item.getName())
+                    .stream().map(Skill::getName)
                     .collect(Collectors.toList());
             dto.setSkills(skills);
         }
         return dto;
     }
 
-    // update job
     public Job updateJob(Job job, Job jobInDB) {
 
         // check skills
         if (job.getSkills() != null) {
             List<Long> reqSkills = job.getSkills()
-                    .stream().map(x -> x.getId())
+                    .stream().map(Skill::getId)
                     .collect(Collectors.toList());
 
             List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
@@ -102,9 +101,7 @@ public class JobService {
         // check company
         if (job.getCompany() != null) {
             Optional<Company> companyOptional = this.companyRepository.findById(job.getCompany().getId());
-            if (companyOptional.isPresent()) {
-                jobInDB.setCompany(companyOptional.get());
-            }
+            companyOptional.ifPresent(jobInDB::setCompany);
         }
 
         // update correct info
@@ -119,7 +116,7 @@ public class JobService {
 
         // update job
         Job currentJob = this.jobRepository.save(jobInDB);
-
+        log.info("Update job with {} successfully", job.getName());
         return currentJob;
     }
 
@@ -140,7 +137,7 @@ public class JobService {
 
         if (job.getSkills() != null) {
             List<String> skills = job.getSkills()
-                    .stream().map(item -> item.getName())
+                    .stream().map(Skill::getName)
                     .collect(Collectors.toList());
             dto.setSkills(skills);
         }
@@ -148,12 +145,11 @@ public class JobService {
         return dto;
     }
 
-    // delete job
     public void deleteJob(long id) {
+        log.info("Delete job with {} successfully", id);
         this.jobRepository.deleteById(id);
     }
 
-    // fetch all jobs
     public ResultPaginationDTO fetchAllJobs(Specification<Job> spec, Pageable pageable) {
         Page<Job> pageUser = this.jobRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
@@ -166,6 +162,8 @@ public class JobService {
         rs.setMeta(mt);
 
         rs.setResult(pageUser.getContent());
+
+        log.info("Fetch all jobs successfully");
         return rs;
     }
 }

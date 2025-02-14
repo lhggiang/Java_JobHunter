@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import vn.hoanggiang.jobhunter.domain.request.ExchangeTokenRequest;
 import vn.hoanggiang.jobhunter.domain.response.ExchangeTokenResponse;
 
+// Send POST request to Google OAuth2 to exchange token
 @FeignClient(name = "outbound-identity", url = "https://oauth2.googleapis.com")
 public interface OutboundIdentityClient {
     @PostMapping(value = "/token", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

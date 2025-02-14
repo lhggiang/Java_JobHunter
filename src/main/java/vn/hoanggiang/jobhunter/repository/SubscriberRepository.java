@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import vn.hoanggiang.jobhunter.domain.Subscriber;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 
 @Repository

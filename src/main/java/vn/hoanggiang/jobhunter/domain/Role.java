@@ -32,7 +32,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "name không được để trống")
+    @NotBlank(message = "name cannot be blank")
     private String name;
 
     private String description;
@@ -44,7 +44,8 @@ public class Role {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "roles" })
-    @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)

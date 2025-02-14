@@ -31,7 +31,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
 
-	implementation ("org.springframework.boot:spring-boot-starter-logging")
+//	implementation ("org.springframework.boot:spring-boot-starter-logging")
 
 	// Logstash Logback Encoder
 	implementation("net.logstash.logback:logstash-logback-encoder:7.2")
@@ -44,7 +44,9 @@ dependencies {
 	implementation("redis.clients:jedis:5.1.3")
 
 	// pdfbox
-	implementation("org.apache.pdfbox:pdfbox:3.0.3")
+	implementation("org.apache.pdfbox:pdfbox:3.0.3"){
+		exclude(group = "commons-logging", module = "commons-logging")
+	}
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")

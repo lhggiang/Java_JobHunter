@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import vn.hoanggiang.jobhunter.domain.Job;
@@ -15,6 +16,7 @@ import vn.hoanggiang.jobhunter.repository.SkillRepository;
 import vn.hoanggiang.jobhunter.repository.SubscriberRepository;
 
 @Service
+@Slf4j
 public class SubscriberService {
 
   private final SubscriberRepository subscriberRepository;
@@ -33,47 +35,48 @@ public class SubscriberService {
     this.emailService = emailService;
   }
 
-  // check email exists
   public boolean isExistsByEmail(String email) {
     return this.subscriberRepository.existsByEmail(email);
   }
 
-  // create subscriber
   public Subscriber createSubscriber(Subscriber subscriber) {
     // check skills
     if (subscriber.getSkills() != null) {
       List<Long> reqSkills = subscriber.getSkills()
-          .stream().map(item -> item.getId())
+          .stream().map(Skill::getId)
           .collect(Collectors.toList());
 
       List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
       subscriber.setSkills(dbSkills);
     }
 
+    log.info("Create subscriber {} successfully", subscriber.getEmail());
     return this.subscriberRepository.save(subscriber);
   }
 
-  // update subscriber
   public Subscriber updateSubscriber(Subscriber subsDB, Subscriber subsRequest) {
     // check skills
     if (subsRequest.getSkills() != null) {
       List<Long> reqSkills = subsRequest.getSkills()
-          .stream().map(x -> x.getId())
+          .stream().map(Skill::getId)
           .collect(Collectors.toList());
 
       List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
       subsDB.setSkills(dbSkills);
     }
+
+    log.info("Update subscriber {} successfully", subsDB.getEmail());
     return this.subscriberRepository.save(subsDB);
   }
 
-  // get subscriber by id
   public Subscriber findSubscriberById(long id) {
     Optional<Subscriber> subsOptional = this.subscriberRepository.findById(id);
+    log.info("Fetch subscriber with id {} successfully", subsOptional.get().getId());
     return subsOptional.orElse(null);
   }
 
   public Subscriber findByEmail(String email) {
+    log.info("Fetch subscriber with email {} successfully", email);
     return this.subscriberRepository.findByEmail(email);
   }
 
@@ -103,7 +106,7 @@ public class SubscriberService {
 
             this.emailService.sendEmailFromTemplateSync(
                 sub.getEmail(),
-                "Cơ hội việc làm hot đang chờ đón bạn, khám phá ngay",
+                "Hot job opportunities are waiting for you, explore now",
                 "job",
                 sub.getName(),
                 arr);

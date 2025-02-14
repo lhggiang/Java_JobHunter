@@ -38,7 +38,6 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // create a new user
     @PostMapping
     @ApiMessage("create a new user")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User user)
@@ -46,7 +45,7 @@ public class UserController {
         boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
         if (isEmailExist) {
             throw new IdInvalidException(
-                    "Email " + user.getEmail() + " đã tồn tại, vui lòng sử dụng email khác.");
+                    "Email " + user.getEmail() + " already exists, please use another email.");
         }
 
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
@@ -55,32 +54,38 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(newUser));
     }
 
-    // delete a user
+    @PutMapping
+    @ApiMessage("update a user")
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
+        User curentUser = this.userService.handleUpdateUser(user);
+        if (curentUser == null) {
+            throw new IdInvalidException("User with id = " + user.getId() + " does not exist");
+        }
+        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(curentUser));
+    }
+
     @DeleteMapping("/{id}")
     @ApiMessage("delete a user")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") long id)
             throws IdInvalidException {
         User currentUser = this.userService.fetchUserById(id);
         if (currentUser == null) {
-            throw new IdInvalidException("User với id = " + id + " không tồn tại");
+            throw new IdInvalidException("User with id = " + id + " does not exist");
         }
-
         this.userService.handleDeleteUser(id);
         return ResponseEntity.ok(null);
     }
 
-    // fetch user by id
     @GetMapping("/{id}")
     @ApiMessage("fetch user by id")
     public ResponseEntity<ResUserDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
         User fetchUser = this.userService.fetchUserById(id);
         if (fetchUser == null) {
-            throw new IdInvalidException("User với id = " + id + " không tồn tại");
+            throw new IdInvalidException("User with id = " + id + " does not exist");
         }
         return ResponseEntity.ok(this.userService.convertToResUserDTO(fetchUser));
     }
 
-    // fetch all users
     @GetMapping
     @ApiMessage("fetch all users")
     public ResponseEntity<ResultPaginationDTO> getAllUser(
@@ -88,17 +93,6 @@ public class UserController {
             Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(
                 this.userService.fetchAllUser(spec, pageable));
-    }
-
-    // update a user
-    @PutMapping
-    @ApiMessage("update a user")
-    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
-        User curentUser = this.userService.handleUpdateUser(user);
-        if (curentUser == null) {
-            throw new IdInvalidException("User với id = " + user.getId() + " không tồn tại");
-        }
-        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(curentUser));
     }
 
 }

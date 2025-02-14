@@ -2,7 +2,6 @@ package vn.hoanggiang.jobhunter.domain.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;

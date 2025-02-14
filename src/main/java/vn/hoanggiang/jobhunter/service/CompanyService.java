@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +21,7 @@ import vn.hoanggiang.jobhunter.repository.UserRepository;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
 
 @Service
+@Slf4j
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
@@ -36,12 +38,11 @@ public class CompanyService {
         this.userRepository = userRepository;
     }
 
-    // create company
-    public Company handleCreateCompany(Company c) {
-        return this.companyRepository.save(c);
+    public Company handleCreateCompany(Company company) {
+        log.info("Create job with {} successfully", company.getName());
+        return this.companyRepository.save(company);
     }
 
-    // update company
     public Company handleUpdateCompany(Company c) {
         // check company exists or not
         Optional<Company> companyOptional = this.companyRepository.findById(c.getId());
@@ -53,12 +54,13 @@ public class CompanyService {
             currentCompany.setIndustry(c.getIndustry());
             currentCompany.setDescription(c.getDescription());
             currentCompany.setAddress(c.getAddress());
+
+            log.info("Update job with {} successfully", currentCompany.getName());
             return this.companyRepository.save(currentCompany);
         }
         return null;
     }
 
-    // delete company
     public void handleDeleteCompany(long id) {
         Optional<Company> comOptional = this.companyRepository.findById(id);
         if (comOptional.isPresent()) {
@@ -69,10 +71,11 @@ public class CompanyService {
 
             this.userRepository.deleteAll(users);
         }
+
+        log.info("Delete job with {} successfully", id);
         this.companyRepository.deleteById(id);
     }
 
-    // fetch all companies
     public ResultPaginationDTO handleGetCompany(Specification<Company> spec, Pageable pageable) {
         Page<Company> pageCompany = this.companyRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
@@ -86,15 +89,16 @@ public class CompanyService {
 
         rs.setMeta(mt);
         rs.setResult(pageCompany.getContent());
+
+        log.info("Fetch all jobs with successfully");
         return rs;
     }
 
-    // find company by id
     public Optional<Company> findById(long id) {
+        log.info("Fetch job with {} successfully", id);
         return this.companyRepository.findById(id);
     }
 
-    // check company exists by name
     public boolean existsByName(String name) {
         return this.companyRepository.existsByName(name);
     }

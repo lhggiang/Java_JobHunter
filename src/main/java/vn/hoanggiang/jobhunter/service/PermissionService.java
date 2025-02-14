@@ -2,6 +2,7 @@ package vn.hoanggiang.jobhunter.service;
 
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,6 +13,7 @@ import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoanggiang.jobhunter.repository.PermissionRepository;
 
 @Service
+@Slf4j
 public class PermissionService {
     private final PermissionRepository permissionRepository;
 
@@ -19,7 +21,6 @@ public class PermissionService {
         this.permissionRepository = permissionRepository;
     }
 
-    // check permission exist according to module, apiPath and method
     public boolean isPermissionExist(Permission permission) {
         return permissionRepository.existsByModuleAndApiPathAndMethod(
                 permission.getModule(),
@@ -27,18 +28,17 @@ public class PermissionService {
                 permission.getMethod());
     }
 
-    // fetch permission by id
     public Permission fetchById(long id) {
         Optional<Permission> permissionOptional = this.permissionRepository.findById(id);
+        log.info("Fetch permission with {} successfully", id);
         return permissionOptional.orElse(null);
     }
 
-    // create a permission
     public Permission createPermission(Permission permission) {
+        log.info("Create permission {} successfully", permission.getName());
         return this.permissionRepository.save(permission);
     }
 
-    // update a permission
     public Permission updatePermission(Permission permission) {
         Permission permissionDB = this.fetchById(permission.getId());
         if (permissionDB != null) {
@@ -49,11 +49,11 @@ public class PermissionService {
 
             // update permission
             permissionDB = this.permissionRepository.save(permissionDB);
+            log.info("Update permission {} successfully", permission.getName());
         }
         return permissionDB;
     }
 
-    // delete a permission
     public void deletePermission(long id) {
         // find permission by id
         Permission permission = this.permissionRepository.findById(id).orElse(null);
@@ -62,11 +62,11 @@ public class PermissionService {
             // delete permission_role
             permission.getRoles().forEach(role -> role.getPermissions().remove(permission));
             // delete permission
+            log.info("Delete permission with {} successfully", permission.getId());
             this.permissionRepository.delete(permission);
         }
     }
 
-    // fetch permissions
     public ResultPaginationDTO getPermissions(Specification<Permission> spec, Pageable pageable) {
         Page<Permission> pPermissions = this.permissionRepository.findAll(spec, pageable);
 
@@ -81,6 +81,7 @@ public class PermissionService {
         rs.setMeta(mt);
         rs.setResult(pPermissions.getContent());
 
+        log.info("Fetch all permissions successfully");
         return rs;
     }
 }

@@ -36,10 +36,10 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "name không được để trống")
+    @NotBlank(message = "name cannot be blank")
     private String name;
 
-    @NotBlank(message = "location không được để trống")
+    @NotBlank(message = "location cannot be blank")
     private String location;
 
     private double salary;
@@ -65,7 +65,8 @@ public class Job {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "jobs" })
-    @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
 
     @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)

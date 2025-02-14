@@ -1,7 +1,5 @@
 package vn.hoanggiang.jobhunter.controller;
 
-import java.time.LocalDate;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,7 +25,6 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    // create job
     @PostMapping
     @ApiMessage("create a job")
     public ResponseEntity<ResCreateJobDTO> createJob(@Valid @RequestBody Job job) {
@@ -36,45 +33,41 @@ public class JobController {
                 .body(this.jobService.convertToResCreateJobDTO(currentJob));
     }
 
-    // update job
     @PutMapping
     @ApiMessage("update a job")
     public ResponseEntity<ResUpdateJobDTO> updateJob(@Valid @RequestBody Job job) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(job.getId());
-        if (!currentJob.isPresent()) {
-            throw new IdInvalidException("Job not found");
+        if (currentJob.isEmpty()) {
+            throw new IdInvalidException("Job with id = " + job.getId() + " does not exist.");
         }
         Job updatedJob = this.jobService.updateJob(job, currentJob.get());
         return ResponseEntity.ok()
                 .body(this.jobService.convertToResUpdateJobDTO(updatedJob));
     }
 
-    // delete job
     @DeleteMapping("/{id}")
     @ApiMessage("delete a job by id")
     public ResponseEntity<Void> deleteJob(@PathVariable long id) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(id);
-        if (!currentJob.isPresent()) {
-            throw new IdInvalidException("Job not found");
+        if (currentJob.isEmpty()) {
+            throw new IdInvalidException("Job with id = " + id + " does not exist.");
         }
         this.jobService.deleteJob(id);
         return ResponseEntity.ok().body(null);
     }
 
-    // fetch job by id
     @GetMapping("/{id}")
     @ApiMessage("fetch a job by id")
     public ResponseEntity<Job> getJob(@PathVariable long id) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(id);
-        if (!currentJob.isPresent()) {
-            throw new IdInvalidException("Job not found");
+        if (currentJob.isEmpty()) {
+            throw new IdInvalidException("Job with id = " + id + " does not exist.");
         }
         return ResponseEntity.ok().body(currentJob.get());
     }
 
-    // fetch all jobs
     @GetMapping
-    @ApiMessage("fetch job with pagination")
+    @ApiMessage("fetch all jobs with pagination")
     public ResponseEntity<ResultPaginationDTO> getAllJobs(
             @Filter Specification<Job> spec,
             Pageable pageable) {

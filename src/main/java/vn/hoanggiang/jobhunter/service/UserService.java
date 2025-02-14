@@ -34,11 +34,10 @@ public class UserService {
         this.roleService = roleService;
     }
 
-    // create user
     public User handleCreateUser(User user) {
         // check company
         if (user.getCompany() != null) {
-            Optional<Company> company = companyService.findById(user.getCompany().getId());
+            Optional<Company> company = this.companyService.findById(user.getCompany().getId());
             user.setCompany(company.orElse(null));
         }
 
@@ -48,50 +47,13 @@ public class UserService {
             if(role == null){
                 role = this.roleService.fetchByName(user.getRole().getName());
             }
-            user.setRole(role != null ? role : null);
+            user.setRole(role);
         }
 
-        log.info("Create user successfully");
+        log.info("Create user {} successfully", user.getEmail());
         return this.userRepository.save(user);
     }
 
-    // delete user
-    public void handleDeleteUser(long id) {
-        this.userRepository.deleteById(id);
-    }
-
-    // fetch user by id
-    public User fetchUserById(long id) {
-        Optional<User> userOptional = this.userRepository.findById(id);
-        return userOptional.orElse(null);
-    }
-
-
-    // fetch all users
-    public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
-        Page<User> pageUser = this.userRepository.findAll(spec, pageable);
-        ResultPaginationDTO rs = new ResultPaginationDTO();
-        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
-
-        mt.setPage(pageable.getPageNumber() + 1);
-        mt.setPageSize(pageable.getPageSize());
-
-        mt.setPages(pageUser.getTotalPages());
-        mt.setTotal(pageUser.getTotalElements());
-
-        rs.setMeta(mt);
-
-        // remove sensitive data
-        List<ResUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> this.convertToResUserDTO(item))
-                .collect(Collectors.toList());
-
-        rs.setResult(listUser);
-
-        return rs;
-    }
-
-    // update user
     public User handleUpdateUser(User reqUser) {
         User currentUser = this.fetchUserById(reqUser.getId());
         if (currentUser != null) {
@@ -109,21 +71,55 @@ public class UserService {
             // check role
             if (reqUser.getRole() != null) {
                 Role role = this.roleService.fetchById(reqUser.getRole().getId());
-                currentUser.setRole(role != null ? role : null);
+                currentUser.setRole(role);
             }
 
-            // save
             currentUser = this.userRepository.save(currentUser);
+            log.info("Update user {} successfully", currentUser.getEmail());
         }
         return currentUser;
     }
 
-    // get user by username
+    public void handleDeleteUser(long id) {
+        this.userRepository.deleteById(id);
+        log.info("Delete user with {} successfully", id);
+    }
+
+    public User fetchUserById(long id) {
+        Optional<User> userOptional = this.userRepository.findById(id);
+        log.info("Fetch user with {} successfully", id);
+        return userOptional.orElse(null);
+    }
+
+    public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
+        Page<User> pageUser = this.userRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageUser.getTotalPages());
+        mt.setTotal(pageUser.getTotalElements());
+
+        rs.setMeta(mt);
+
+        // remove sensitive data
+        List<ResUserDTO> listUser = pageUser.getContent()
+                .stream().map(this::convertToResUserDTO)
+                .collect(Collectors.toList());
+
+        rs.setResult(listUser);
+
+        log.info("Fetch all users successfully");
+
+        return rs;
+    }
+
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByEmail(username);
     }
 
-    // check email exist
     public boolean isEmailExist(String email) {
         return this.userRepository.existsByEmail(email);
     }
@@ -203,7 +199,6 @@ public class UserService {
         return res;
     }
 
-    // update refresh token
     public void updateUserToken(String token, String email) {
         User currentUser = this.handleGetUserByUsername(email);
         if (currentUser != null) {

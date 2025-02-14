@@ -2,11 +2,7 @@ package vn.hoanggiang.jobhunter.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.Subscriber;
@@ -29,7 +25,7 @@ public class SubscriberController {
   public ResponseEntity<Subscriber> create(@Valid @RequestBody Subscriber sub) throws IdInvalidException {
     // check email
     boolean isExist = this.subscriberService.isExistsByEmail(sub.getEmail());
-    if (isExist == true) {
+    if (isExist) {
       throw new IdInvalidException("Email " + sub.getEmail() + " already exists");
     }
 
@@ -48,11 +44,10 @@ public class SubscriberController {
     return ResponseEntity.ok().body(this.subscriberService.updateSubscriber(subsDB, subsRequest));
   }
 
-  @PostMapping("/subscribers/skills")
+  @PostMapping("/skills")
   @ApiMessage("get subscriber's skill")
-  public ResponseEntity<Subscriber> getSubscribersSkill() throws IdInvalidException {
+  public ResponseEntity<Subscriber> getSubscribersSkill(){
     String email = SecurityUtil.getCurrentUserLogin().orElse("");
     return ResponseEntity.ok().body(this.subscriberService.findByEmail(email));
   }
-
 }

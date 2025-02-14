@@ -1,12 +1,10 @@
 package vn.hoanggiang.jobhunter.service;
 
-import java.io.IOException;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +17,6 @@ import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 import com.turkraft.springfilter.parser.FilterParser;
 import com.turkraft.springfilter.parser.node.FilterNode;
 
-import org.springframework.web.client.RestTemplate;
 import vn.hoanggiang.jobhunter.domain.Job;
 import vn.hoanggiang.jobhunter.domain.Resume;
 import vn.hoanggiang.jobhunter.domain.User;
@@ -33,6 +30,7 @@ import vn.hoanggiang.jobhunter.repository.UserRepository;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
 
 @Service
+@Slf4j
 public class ResumeService {
     @Autowired
     FilterBuilder fb;
@@ -56,12 +54,11 @@ public class ResumeService {
         this.jobRepository = jobRepository;
     }
 
-    // fetch resume by id
     public Optional<Resume> fetchById(long id) {
+        log.info("Fetch resume with {} successfully", id);
         return this.resumeRepository.findById(id);
     }
 
-    // check resume exist by user and job
     public boolean checkResumeExistByUserAndJob(Resume resume) {
         // check user by id
         if (resume.getUser() == null)
@@ -74,13 +71,10 @@ public class ResumeService {
         if (resume.getJob() == null)
             return false;
         Optional<Job> jobOptional = this.jobRepository.findById(resume.getJob().getId());
-        if (jobOptional.isEmpty())
-            return false;
 
-        return true;
+        return jobOptional.isPresent();
     }
 
-    // create a resume
     public ResCreateResumeDTO createResume(Resume resume) {
         resume = this.resumeRepository.save(resume);
 
@@ -89,10 +83,10 @@ public class ResumeService {
         res.setCreatedBy(resume.getCreatedBy());
         res.setCreatedAt(resume.getCreatedAt());
 
+        log.info("Create resume with {} successfully", resume.getId());
         return res;
     }
 
-    // update a resume
     public ResUpdateResumeDTO updateResume(Resume resume) {
         resume = this.resumeRepository.save(resume);
 
@@ -100,15 +94,15 @@ public class ResumeService {
         res.setUpdatedAt(resume.getUpdatedAt());
         res.setUpdatedBy(resume.getUpdatedBy());
 
+        log.info("Update resume with {} successfully", resume.getId());
         return res;
     }
 
-    // delete resume
     public void deleteResume(long id) {
+        log.info("Delete resume with {} successfully", id);
         this.resumeRepository.deleteById(id);
     }
 
-    // get resume
     public ResFetchResumeDTO getResume(Resume resume) {
         ResFetchResumeDTO res = new ResFetchResumeDTO();
 
@@ -128,10 +122,10 @@ public class ResumeService {
         res.setUser(new ResFetchResumeDTO.UserResume(resume.getUser().getId(), resume.getUser().getName()));
         res.setJob(new ResFetchResumeDTO.JobResume(resume.getJob().getId(), resume.getJob().getName()));
 
+        log.info("Fetch resume successfully");
         return res;
     }
 
-    // fetch all resumes
     public ResultPaginationDTO fetchAllResume(Specification<Resume> spec, Pageable pageable) {
         Page<Resume> pageUser = this.resumeRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
@@ -152,10 +146,10 @@ public class ResumeService {
 
         rs.setResult(listResume);
 
+        log.info("Fetch all resumes successfully");
         return rs;
     }
 
-    // fetch resume by user
     public ResultPaginationDTO fetchResumeByUser(Pageable pageable) {
         String email = SecurityUtil.getCurrentUserLogin().orElse("");
 
@@ -176,30 +170,12 @@ public class ResumeService {
 
         // remove sensitive data
         List<ResFetchResumeDTO> listResume = pageResume.getContent()
-                .stream().map(item -> this.getResume(item))
+                .stream().map(this::getResume)
                 .collect(Collectors.toList());
 
         rs.setResult(listResume);
 
+        log.info("Fetch resumes of {} successfully", email);
         return rs;
     }
-
-//    public String analyzeCV(String cvContent) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Authorization", "Bearer " + API_KEY);
-//        headers.set("Content-Type", "application/json");
-//
-//        String requestBody = "{ \"model\": \"gpt-4\", \"messages\": [{ \"role\": \"system\", \"content\": \"Đánh giá CV sau đây...\" }, { \"role\": \"user\", \"content\": \"" + cvContent + "\" }]}";
-//
-//        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-//        RestTemplate restTemplate = new RestTemplate();
-//        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, request, String.class);
-//        return response.getBody();
-//    }
-
-//    public String analyzeCV(String cvText) throws IOException, InterruptedException {
-//        String prompt = "Đánh giá CV này: " + cvText;
-//        GenerateContentResponse generateContentResponse = this.chatSession.sendMessage(prompt);
-//        return ResponseHandler.getText(generateContentResponse);
-//    }
 }
