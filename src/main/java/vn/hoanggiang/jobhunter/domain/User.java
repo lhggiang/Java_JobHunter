@@ -20,15 +20,16 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
 import vn.hoanggiang.jobhunter.util.constant.GenderEnum;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

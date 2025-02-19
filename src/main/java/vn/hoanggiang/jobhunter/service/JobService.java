@@ -113,6 +113,7 @@ public class JobService {
         jobInDB.setStartDate(job.getStartDate());
         jobInDB.setEndDate(job.getEndDate());
         jobInDB.setActive(job.isActive());
+        jobInDB.setDescription(job.getDescription());
 
         // update job
         Job currentJob = this.jobRepository.save(jobInDB);

@@ -1,17 +1,15 @@
-package vn.hoanggiang.jobhunter.domain.response.user;
+package vn.hoanggiang.jobhunter.domain.response;
 
 import java.time.Instant;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import vn.hoanggiang.jobhunter.util.constant.GenderEnum;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ResUserDTO {
     private long id;
     private String email;

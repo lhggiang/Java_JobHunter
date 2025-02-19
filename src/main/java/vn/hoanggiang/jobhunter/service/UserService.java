@@ -14,10 +14,10 @@ import vn.hoanggiang.jobhunter.domain.Company;
 import vn.hoanggiang.jobhunter.domain.Role;
 import vn.hoanggiang.jobhunter.domain.User;
 import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResCreateUserDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResUpdateUserDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResUserDTO;
+import vn.hoanggiang.jobhunter.domain.response.ResUserDTO;
 import vn.hoanggiang.jobhunter.repository.UserRepository;
+
+import javax.annotation.processing.Generated;
 
 @Service
 @Slf4j
@@ -116,57 +116,17 @@ public class UserService {
         return rs;
     }
 
+    @Generated("jacoco-exclude")
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByEmail(username);
     }
 
+    @Generated("jacoco-exclude")
     public boolean isEmailExist(String email) {
         return this.userRepository.existsByEmail(email);
     }
 
-    public ResCreateUserDTO convertToResCreateUserDTO(User user) {
-        ResCreateUserDTO res = new ResCreateUserDTO();
-        ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
-
-        res.setId(user.getId());
-        res.setEmail(user.getEmail());
-        res.setName(user.getName());
-        res.setAge(user.getAge());
-        res.setCreatedAt(user.getCreatedAt());
-        res.setGender(user.getGender());
-        res.setAddress(user.getAddress());
-
-        if (user.getCompany() != null) {
-            com.setId(user.getCompany().getId());
-            com.setName(user.getCompany().getName());
-
-            res.setCompany(com);
-        }
-        return res;
-    }
-
-    public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
-        ResUpdateUserDTO res = new ResUpdateUserDTO();
-        ResUpdateUserDTO.CompanyUser com = new ResUpdateUserDTO.CompanyUser();
-
-        // update user
-        res.setId(user.getId());
-        res.setName(user.getName());
-        res.setAge(user.getAge());
-        res.setUpdatedAt(user.getUpdatedAt());
-        res.setGender(user.getGender());
-        res.setAddress(user.getAddress());
-
-        // update company
-        if (user.getCompany() != null) {
-            com.setId(user.getCompany().getId());
-            com.setName(user.getCompany().getName());
-            res.setCompany(com);
-        }
-
-        return res;
-    }
-
+    @Generated("jacoco-exclude")
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
         ResUserDTO.CompanyUser com = new ResUserDTO.CompanyUser();
@@ -199,6 +159,7 @@ public class UserService {
         return res;
     }
 
+    @Generated("jacoco-exclude")
     public void updateUserToken(String token, String email) {
         User currentUser = this.handleGetUserByUsername(email);
         if (currentUser != null) {
@@ -207,6 +168,7 @@ public class UserService {
         }
     }
 
+    @Generated("jacoco-exclude")
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }

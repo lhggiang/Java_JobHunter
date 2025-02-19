@@ -19,9 +19,7 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.hoanggiang.jobhunter.domain.User;
 import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResCreateUserDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResUpdateUserDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResUserDTO;
+import vn.hoanggiang.jobhunter.domain.response.ResUserDTO;
 import vn.hoanggiang.jobhunter.service.UserService;
 import vn.hoanggiang.jobhunter.util.annotation.ApiMessage;
 import vn.hoanggiang.jobhunter.util.error.IdInvalidException;
@@ -40,7 +38,7 @@ public class UserController {
 
     @PostMapping
     @ApiMessage("create a new user")
-    public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User user)
+    public ResponseEntity<ResUserDTO> createNewUser(@Valid @RequestBody User user)
             throws IdInvalidException {
         boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
         if (isEmailExist) {
@@ -51,17 +49,17 @@ public class UserController {
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
         User newUser = this.userService.handleCreateUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(newUser));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResUserDTO(newUser));
     }
 
     @PutMapping
     @ApiMessage("update a user")
-    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
+    public ResponseEntity<ResUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
         User curentUser = this.userService.handleUpdateUser(user);
         if (curentUser == null) {
             throw new IdInvalidException("User with id = " + user.getId() + " does not exist");
         }
-        return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(curentUser));
+        return ResponseEntity.ok(this.userService.convertToResUserDTO(curentUser));
     }
 
     @DeleteMapping("/{id}")
@@ -94,5 +92,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 this.userService.fetchAllUser(spec, pageable));
     }
-
 }

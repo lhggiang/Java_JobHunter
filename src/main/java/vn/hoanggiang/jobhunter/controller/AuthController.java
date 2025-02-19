@@ -21,7 +21,7 @@ import vn.hoanggiang.jobhunter.domain.request.ResetPasswordDTO;
 import vn.hoanggiang.jobhunter.domain.response.ExchangeTokenResponse;
 import vn.hoanggiang.jobhunter.domain.response.OutboundUserResponse;
 import vn.hoanggiang.jobhunter.domain.response.ResLoginDTO;
-import vn.hoanggiang.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoanggiang.jobhunter.domain.response.ResUserDTO;
 import vn.hoanggiang.jobhunter.repository.OutboundIdentityClient;
 import vn.hoanggiang.jobhunter.repository.OutboundUserClient;
 import vn.hoanggiang.jobhunter.service.EmailService;
@@ -233,7 +233,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ApiMessage("register a new user")
-    public ResponseEntity<ResCreateUserDTO> register(@Valid @RequestBody User reqUser) throws IdInvalidException {
+    public ResponseEntity<ResUserDTO> register(@Valid @RequestBody User reqUser) throws IdInvalidException {
         // check email exist or not
         boolean isEmailExist = this.userService.isEmailExist(reqUser.getEmail());
         if (isEmailExist) {
@@ -247,7 +247,7 @@ public class AuthController {
         User user = this.userService.handleCreateUser(reqUser);
 
         log.info("User {} register a new account", user.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResUserDTO(user));
     }
 
     @PostMapping("/outbound/authentication")
