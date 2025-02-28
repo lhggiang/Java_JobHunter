@@ -20,7 +20,7 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 
 - **Build tool**: Gradle
 - **Database**: MySQL
-- **DevOps**: Docker
+- **DevOps**: Docker, Kafka
  
 📌 **Backend**:
 - Spring Boot, Spring Data JPA, Spring Security, Spring REST API 
@@ -29,10 +29,6 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - Caching data: Redis
 - Quản lý API Swagger, Postman, Lombok
 - Testing: JUnit 5, Mockito
-
-📌 **Frontend**: 
-- HTML, CSS, JS
-- ReactJS, Axios, Redux
 
 ## 📝 Demo ứng dụng: http://jobhunter.lahoanggiang.io.vn
 
@@ -59,8 +55,7 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - Chỉnh sửa cấu hình trong application.properties để kết nối với MySQL.
 
 ## 📞 Tác giả:
-- La Hoàng Giang (Xây dựng Backend) - Đồng tác giả https://github.com/lhggiang
-- Trần Đặng Mỹ Phương (Xây dựng Frontend) - Đồng tác giả https://github.com/peonymyx
+- La Hoàng Giang - Tác giả https://github.com/lhggiang
 
 ## 🔥 DEMO CHỨC NĂNG ỨNG DỤNG QUA POSTMAN
 
@@ -109,6 +104,16 @@ Sử dụng ngôn ngữ **Python** để triển khai các kiến thức:
 - Sử dụng ELK (Elasticsearch, Logstash, Kibana) để quản lý log giúp thu thập, xử lý, lưu trữ và trực quan hóa dữ liệu log một cách hiệu quả, hỗ trợ giám sát hệ thống, phân tích lỗi và tối ưu hiệu suất.
 
 ![image](https://github.com/user-attachments/assets/33ce27ff-7aa7-476d-b4ee-41d4494519f6)
+
+### ✅ Kafka 
+- Sử dụng Kafka cho tính năng gửi thông báo qua email cho người dùng khi job mới tạo phù hợp với mong muốn của ứng viên.
+- Giúp tách rời các service (Job Service (tạo job) và Notification Service (gửi thông báo)), xử lý real-time (thông báo được gửi ngay lập tức khi job được tạo).
+
+Khi công việc vừa được tạo thì công việc đó sẽ được gửi đến ứng viên phù hợp qua email.
+
+![image](https://github.com/user-attachments/assets/7e5e98a1-e3a2-4fce-99bb-0af84fd0b969)
+
+![image](https://github.com/user-attachments/assets/ca08a9e0-38aa-4a89-a855-07e699c472c9)
 
 ## 🔧 HẠN CHẾ CỦA ỨNG DỤNG
 - Chức năng đánh giá CV sử dụng AI còn hạn chế trong trường hợp các từ đồng nghĩa và CV được viết bằng Tiếng Việt.
