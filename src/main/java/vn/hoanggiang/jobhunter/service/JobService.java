@@ -5,13 +5,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import vn.hoanggiang.jobhunter.domain.Company;
 import vn.hoanggiang.jobhunter.domain.Job;
+import vn.hoanggiang.jobhunter.domain.JobCreatedEvent;
 import vn.hoanggiang.jobhunter.domain.Skill;
 import vn.hoanggiang.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoanggiang.jobhunter.domain.response.job.ResCreateJobDTO;
@@ -27,11 +30,21 @@ public class JobService {
     private final SkillRepository skillRepository;
     private final CompanyRepository companyRepository;
 
+    private final KafkaTemplate<String, JobCreatedEvent> kafkaTemplate;
+    private final NotificationService notificationService;
+
+    @Value("${jobhunter.kafka.topics.job-created}")
+    private String jobCreatedTopic;
+
     public JobService(JobRepository jobRepository,
-            SkillRepository skillRepository, CompanyRepository companyRepository) {
+            SkillRepository skillRepository, CompanyRepository companyRepository,
+            KafkaTemplate<String, JobCreatedEvent> kafkaTemplate,
+            NotificationService notificationService) {
         this.jobRepository = jobRepository;
         this.skillRepository = skillRepository;
         this.companyRepository = companyRepository;
+        this.kafkaTemplate = kafkaTemplate;
+        this.notificationService = notificationService;
     }
 
     public Optional<Job> fetchJobById(long id) {
@@ -59,6 +72,18 @@ public class JobService {
 
         // create job
         Job currentJob = this.jobRepository.save(job);
+
+        // publish event to Kafka
+        JobCreatedEvent event = new JobCreatedEvent(currentJob);
+        kafkaTemplate.send(jobCreatedTopic, event)
+                .whenComplete((result, ex) -> {
+                    if (ex == null) {
+                        log.info("Job created event published successfully");
+                    } else {
+                        log.error("Failed to publish job created event", ex);
+                    }
+                });
+
         log.info("Create job with {} successfully", job.getName());
         return currentJob;
     }

@@ -22,6 +22,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoanggiang.jobhunter.util.SecurityUtil;
@@ -31,6 +32,7 @@ import vn.hoanggiang.jobhunter.util.constant.LevelEnum;
 @Table(name = "jobs")
 @Getter
 @Setter
+@Builder
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

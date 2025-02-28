@@ -1,21 +1,4 @@
 services:
-  #  mysql:
-  #    image: mysql:8.0
-  #    container_name: mysql
-  #    cap_add:
-  #      - SYS_NICE
-  #    restart: always
-  #    environment:
-  #      - MYSQL_DATABASE=testdb
-  #      - MYSQL_ROOT_PASSWORD=password
-  #    ports:
-  #      - '3306:3306'
-  #    volumes:
-  #      - mysql_data:/var/lib/mysql
-  #      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
-  #    networks:
-  #      - default
-  #
   db-mysql:
     image: mysql:5.7.40
     container_name: mysql
@@ -93,6 +76,25 @@ services:
     environment:
       - XPACK_MONITORING_ELASTICSEARCH_HOSTS=http://elastic-search:9200
       - XPACK_MONITORING_ENABLED=true
+    networks:
+      - default
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - default
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - default
 

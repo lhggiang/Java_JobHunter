@@ -42,10 +42,15 @@ dependencies {
 	implementation("org.springframework.data:spring-data-redis")
 	implementation("redis.clients:jedis:5.1.3")
 
+	// Kafka
+	implementation("org.springframework.kafka:spring-kafka")
+//	implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+
 	// PDFBox
 	implementation("org.apache.pdfbox:pdfbox:3.0.3") {
 		exclude(group = "commons-logging", module = "commons-logging")
 	}
+
 
 	// Development and runtime dependencies
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
