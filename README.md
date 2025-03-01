@@ -59,7 +59,56 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 
 ## 🔥 DEMO CHỨC NĂNG ỨNG DỤNG QUA POSTMAN
 
-### ✅ Thống kê và báo cáo
+#### ✅ Skill: có thể thêm, sửa, xóa, lấy danh sách skills (filter + pagination)
+
+Khi lấy danh sách skills phân trang 1 và lấy 3 phần tử, sort theo name giảm dần và filter skills có chứa từ "java" thì kết quả trả ra 2 skill.
+
+![image](https://github.com/user-attachments/assets/b67ff534-852f-4496-ab66-29e118eae8ae)
+
+#### ✅ Company: có thể thêm, sửa, xóa, lấy danh sách companies (filter + pagination), lấy company theo ID, đề xuất công ty tương tự công ty người dùng đã xem
+
+Khi người dùng xem công ty id = 3 (lĩnh vực IT ở HCM) thì hệ thống sẽ đề xuất thêm công ty id = 5 về IT và ở HCM (dùng Redis để in-memory)
+
+![image](https://github.com/user-attachments/assets/9cc8b904-832f-4629-85ce-699902a9e595)
+![image](https://github.com/user-attachments/assets/8d8bd98a-0adf-4038-a210-c59bace04f7d)
+
+#### ✅ User: có thể thêm, sửa, xóa, lấy danh sách users (filter + pagination), lấy user theo ID
+
+![image](https://github.com/user-attachments/assets/feb9ba0a-3c33-44db-adf8-25c531e17264)
+
+#### ✅ Subscriber: có thể thêm, sửa subscriber, lấy skills của subscriber
+
+Ứng viên đăng ký kỹ năng, khi có những jobs liên quan đến kỹ năng ứng viên đăng ký sẽ được gửi thông tin qua email
+
+![image](https://github.com/user-attachments/assets/4df11190-0a40-448d-aba1-b1715f346f0d)
+
+#### ✅ Role: có thể thêm, sửa, xóa, lấy danh sách roles (filter + pagination), lấy role theo ID
+
+Khi lấy danh sách role ta có thể custom để lấy ra danh sách mong đợi, ví dụ lấy ra role có name là HR thì sẽ lấy thông tin của role đó kèm theo permissions 
+
+![image](https://github.com/user-attachments/assets/559a08d1-f444-4909-842f-99ee83ea6797)
+
+#### ✅ Résume: có thể thêm, sửa, xóa, lấy danh sách résumes (filter + pagination), lấy résume theo ID, phân tích résume dựa vào Job Description (ứng dụng AI)
+
+Lấy lịch sử tất cả résume đã nộp của ứng viên, ví dụ ứng viên admin đã nộp job Dev Python của Company 9
+
+![image](https://github.com/user-attachments/assets/c2d771ab-ffe7-4cc3-876e-d6f8c418b0df)
+
+#### ✅ Permission: có thể thêm, sửa, xóa, lấy danh sách permissions (filter + pagination)
+
+![image](https://github.com/user-attachments/assets/f0015c2b-064a-49d1-9d72-0a17ddd9361e)
+
+#### ✅ Job: có thể thêm, sửa, xóa, lấy danh sách jobs (filter + pagination), lấy job theo ID
+
+Tạo công việc Java Backend Developer thuộc company id = 4 và cần skill id = 1 và id = 3
+
+![image](https://github.com/user-attachments/assets/01ddc5dd-8742-4b52-95d3-42f346512ed2)
+
+#### ✅ Auth: dăng ký, đăng nhập (google), quên mật khẩu (gửi qua email), đổi mật khẩu, đăng xuất
+
+![image](https://github.com/user-attachments/assets/04bf8c5a-d678-4b5c-a207-ebf33ff23014)
+
+#### ✅ Thống kê và báo cáo
 Sử dụng kiến thức của **Spring Data JPA** và **JPQL (Java Persistence Query Language)** truy vấn dữ liệu.
 
 ![image](https://github.com/user-attachments/assets/9df45d06-4a93-4688-991d-2262c769ebbf)
@@ -79,7 +128,7 @@ Sử dụng kiến thức của **Spring Data JPA** và **JPQL (Java Persistence
 - Thống kê tổng số lượng company, job, subscriber, các loại resume:
 ![image](https://github.com/user-attachments/assets/776ab1c3-a9ed-491d-8f25-d3d79c599932)
 
-### ✅ Tích hợp AI để đánh giá sự phù hợp giữa CV và Job Description
+#### ✅ Tích hợp AI để đánh giá sự phù hợp giữa CV và Job Description
 Sử dụng ngôn ngữ **Python** để triển khai các kiến thức:
 - **FastAPI** - một framework mạnh mẽ và hiệu suất cao để xây dựng API.
 - **Sentence Transformers** - tính toán mức độ tương đồng văn bản.
@@ -95,17 +144,17 @@ Sử dụng ngôn ngữ **Python** để triển khai các kiến thức:
 
 --> Dựa vào danh sách skills của hệ thống (cv_skills) để so sánh độ tương đồng skills trong CV và Job Description thì độ trùng khớp là 100%.
 
-### ✅ Quản lý API với Swagger
+#### ✅ Quản lý API với Swagger
 - Quản lý API với Swagger giúp thiết kế, tài liệu hóa, kiểm thử và tương tác với API trong hệ thống một cách dễ dàng.
   
 ![image](https://github.com/user-attachments/assets/bb378973-840b-4e9e-84ed-c3e66261d19b)
 
-### ✅ Quản lý log với ELK 
+#### ✅ Quản lý log với ELK 
 - Sử dụng ELK (Elasticsearch, Logstash, Kibana) để quản lý log giúp thu thập, xử lý, lưu trữ và trực quan hóa dữ liệu log một cách hiệu quả, hỗ trợ giám sát hệ thống, phân tích lỗi và tối ưu hiệu suất.
 
 ![image](https://github.com/user-attachments/assets/33ce27ff-7aa7-476d-b4ee-41d4494519f6)
 
-### ✅ Kafka 
+#### ✅ Kafka 
 - Sử dụng Kafka cho tính năng gửi thông báo qua email cho người dùng khi job mới tạo phù hợp với mong muốn của ứng viên.
 - Giúp tách rời các service (Job Service (tạo job) và Notification Service (gửi thông báo)), xử lý real-time (thông báo được gửi ngay lập tức khi job được tạo).
 
