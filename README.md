@@ -1,23 +1,20 @@
 ## JOBHUNTER - Tìm Việc Dễ Dàng Và Nhanh Chóng
 
-## Mục Lục
-- [1. GIỚI THIỆU DỰ ÁN](#1-giới-thiệu-dự-án)
-- [2. Cấu Hình Cơ Sở Dữ Liệu (MySQL)](#2-cấu-hình-cơ-sở-dữ-liệu-mysql)
-- [3. Chạy Ứng Dụng](#3-chạy-ứng-dụng)
-- [4. Giới Thiệu Dự Án](#4-giới-thiệu-dự-án)
-- [5. Các Chức Năng Chính](#5-các-chức-năng-chính)
-- [6. Công Nghệ Sử Dụng](#6-công-nghệ-sử-dụng)
-- [7. Cài Đặt & Chạy Dự Án](#7-cài-đặt--chạy-dự-án)
-- [8. Tác Giả](#8-tác-giả)
-- [9. Demo Chức Năng Ứng Dụng Qua Postman](#9-demo-chức-năng-ứng-dụng-qua-postman)
-- [10. Hạn Chế Của Ứng Dụng](#10-hạn-chế-của-ứng-dụng)
+### Mục Lục
+- [1. Giới thiệu dự án](#1-giới-thiệu-dự-án)
+- [2. Các chức năng chính](#2-các-chức-năng-chính)
+- [3. Công nghệ sử dụng](#3-công-nghệ-sử-dụng)
+- [4. Cài đặt và chạy dự án](#4-cài-đặt-và-chạy-dự-án)
+- [5. Tác giả](#5-tác-giả)
+- [6. Demo chức năng ứng dụng qua Postman](#6-demo-chức-năng-ứng-dụng-qua-postman)
+- [7. Hạn chế của ứng dụng](#7-hạn-chế-của-ứng-dụng)
 
-## 1. GIỚI THIỆU DỰ ÁN
+## 1. Giới thiệu dự án
 Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm một công việc phù hợp với kỹ năng và sở thích của bản thân trở nên khó khăn hơn bao giờ hết. Thị trường lao động hiện nay đang thay đổi nhanh chóng với sự xuất hiện của các công nghệ mới, xu hướng làm việc từ xa và yêu cầu ngày càng cao từ các nhà tuyển dụng. Đối với các ứng viên, việc tìm kiếm công việc không chỉ dừng lại ở việc nộp đơn và chờ đợi. Quá trình này đòi hỏi sự kết nối, cập nhật hồ sơ liên tục, và đôi khi là sự kiên nhẫn trong việc ứng tuyển vào hàng loạt công ty. Còn đối với nhà tuyển dụng, việc lựa chọn ứng viên phù hợp cũng không phải là điều dễ dàng. Việc đăng tin tuyển dụng, sàng lọc hồ sơ và quản lý các ứng viên cần một hệ thống chuyên nghiệp, hiệu quả và dễ dàng sử dụng.
 
 **JobHunter** là một ứng dụng tìm việc làm dễ dàng và nhanh chóng, được xây dựng bằng **Spring** cho phần backend và **MySQL** cho cơ sở dữ liệu. Dự án này nhằm giúp người dùng tìm kiếm việc làm nhanh chóng, hiệu quả, đồng thời giúp nhà tuyển dụng dễ dàng đăng tin tuyển dụng và quản lý hồ sơ của ứng viên.
 
-## 🎯 CÁC CHỨC NĂNG CHÍNH
+## 2. CÁC CHỨC NĂNG CHÍNH
 
 - **Chức năng đăng ký/đăng nhập/quên mật khẩu/đổi mật khẩu/đăng nhập qua Google**: Hỗ trợ người dùng tạo tài khoản, đăng nhập nhanh chóng, lấy lại mật khẩu và bảo mật tài khoản.
 - **Tìm kiếm việc làm**: Cho phép ứng viên tìm việc theo kỹ năng và vị trí việc làm.
@@ -29,7 +26,7 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - **Đánh giá CV bằng AI dựa vào Job Description**: Hệ thống AI tự động phân tích và đánh giá mức độ phù hợp của CV với mô tả công việc.
 - **Gửi thông báo việc làm qua email**: Khi công việc được tạo phù hợp với level, salary, vị trí thì công việc đó sẽ được gửi qua email tự động cho người dùng.
 
-## 🛠 Công Nghệ Sử Dụng
+## 3. CÔNG NGHỆ SỬ DỤNG
 
 - **Build tool**: Gradle
 - **Database**: MySQL
@@ -43,7 +40,7 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - API Documentation & Utilities: Swagger, Postman, Lombok
 - Testing: JUnit 5, Mockito
 
-## 🔧 Cài Đặt & Chạy Dự Án
+## 4. CÀI ĐẶT VÀ CHẠY DỰ ÁN
 
 ### 1. Cài Đặt Backend 
 - Cài đặt JDK 17.
@@ -56,10 +53,10 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - Tạo cơ sở dữ liệu mới: **CREATE DATABASE jobhunter;**
 - Chỉnh sửa cấu hình trong application.properties để kết nối với MySQL.
 
-## 📞 Tác giả:
+## 5. TÁC GIẢ
 - **La Hoàng Giang** - [GitHub](https://github.com/lhggiang)
 
-## 🔥 DEMO CHỨC NĂNG ỨNG DỤNG QUA POSTMAN
+## 6. DEMO CHỨC NĂNG ỨNG DỤNG QUA POSTMAN
 
 #### ✅ Skill: có thể thêm, sửa, xóa, lấy danh sách skills (filter + pagination)
 
@@ -166,6 +163,6 @@ Khi công việc vừa được tạo thì công việc đó sẽ được gửi
 
 ![image](https://github.com/user-attachments/assets/ca08a9e0-38aa-4a89-a855-07e699c472c9)
 
-## 🔧 HẠN CHẾ CỦA ỨNG DỤNG
+## 7. HẠN CHẾ CỦA ỨNG DỤNG
 - Chức năng đánh giá CV sử dụng AI còn hạn chế trong trường hợp các từ đồng nghĩa và CV được viết bằng Tiếng Việt.
 
