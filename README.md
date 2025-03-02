@@ -1,9 +1,21 @@
 ## JOBHUNTER - Tìm Việc Dễ Dàng Và Nhanh Chóng
 
-## 🚀 GIỚI THIỆU DỰ ÁN
+## Mục Lục
+- [1. GIỚI THIỆU DỰ ÁN](#1-giới-thiệu-dự-án)
+- [2. Cấu Hình Cơ Sở Dữ Liệu (MySQL)](#2-cấu-hình-cơ-sở-dữ-liệu-mysql)
+- [3. Chạy Ứng Dụng](#3-chạy-ứng-dụng)
+- [4. Giới Thiệu Dự Án](#4-giới-thiệu-dự-án)
+- [5. Các Chức Năng Chính](#5-các-chức-năng-chính)
+- [6. Công Nghệ Sử Dụng](#6-công-nghệ-sử-dụng)
+- [7. Cài Đặt & Chạy Dự Án](#7-cài-đặt--chạy-dự-án)
+- [8. Tác Giả](#8-tác-giả)
+- [9. Demo Chức Năng Ứng Dụng Qua Postman](#9-demo-chức-năng-ứng-dụng-qua-postman)
+- [10. Hạn Chế Của Ứng Dụng](#10-hạn-chế-của-ứng-dụng)
+
+## 1. GIỚI THIỆU DỰ ÁN
 Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm một công việc phù hợp với kỹ năng và sở thích của bản thân trở nên khó khăn hơn bao giờ hết. Thị trường lao động hiện nay đang thay đổi nhanh chóng với sự xuất hiện của các công nghệ mới, xu hướng làm việc từ xa và yêu cầu ngày càng cao từ các nhà tuyển dụng. Đối với các ứng viên, việc tìm kiếm công việc không chỉ dừng lại ở việc nộp đơn và chờ đợi. Quá trình này đòi hỏi sự kết nối, cập nhật hồ sơ liên tục, và đôi khi là sự kiên nhẫn trong việc ứng tuyển vào hàng loạt công ty. Còn đối với nhà tuyển dụng, việc lựa chọn ứng viên phù hợp cũng không phải là điều dễ dàng. Việc đăng tin tuyển dụng, sàng lọc hồ sơ và quản lý các ứng viên cần một hệ thống chuyên nghiệp, hiệu quả và dễ dàng sử dụng.
 
-**JobHunter** là một ứng dụng tìm việc làm dễ dàng và nhanh chóng, được xây dựng bằng **Spring** cho phần backend, **ReactJS** cho frontend và **MySQL** cho cơ sở dữ liệu. Dự án này nhằm giúp người dùng tìm kiếm việc làm nhanh chóng, hiệu quả, đồng thời giúp nhà tuyển dụng dễ dàng đăng tin tuyển dụng và quản lý hồ sơ của ứng viên.
+**JobHunter** là một ứng dụng tìm việc làm dễ dàng và nhanh chóng, được xây dựng bằng **Spring** cho phần backend và **MySQL** cho cơ sở dữ liệu. Dự án này nhằm giúp người dùng tìm kiếm việc làm nhanh chóng, hiệu quả, đồng thời giúp nhà tuyển dụng dễ dàng đăng tin tuyển dụng và quản lý hồ sơ của ứng viên.
 
 ## 🎯 CÁC CHỨC NĂNG CHÍNH
 
@@ -11,10 +23,11 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - **Tìm kiếm việc làm**: Cho phép ứng viên tìm việc theo kỹ năng và vị trí việc làm.
 - **Ứng tuyển hố sơ**: Ứng viên có thể nộp hồ sơ trực tiếp trên nền tảng mà không cần gửi email hay liên hệ riêng.
 - **Quản lý tin tuyển dụng**: Nhà tuyển dụng có thể đăng, chỉnh sửa, và theo dõi tình trạng tin, hồ sơ tuyển dụng của họ.
-- **Đề xuất công ty dựa vào các công ty đã xem**: Hệ thống tự động gợi ý các công ty có liên quan dựa trên lịch sử tìm kiếm của người dùng.
+- **Đề xuất công ty tương tự dựa vào các công ty đã xem**: Hệ thống tự động gợi ý các công ty có liên quan dựa trên lịch sử tìm kiếm của người dùng.
 - **Quản lý hồ sơ cá nhân**: Người tìm việc có thể cập nhật và quản lý hồ sơ cá nhân, bao gồm kinh nghiệm làm việc, kỹ năng và thông tin liên hệ.
 - **Thống kê và báo cáo**: Cung cấp các báo cáo và thống kê cho người quản trị, nhà tuyển dụng về tình hình ứng tuyển và hiệu quả của các tin tuyển dụng.
 - **Đánh giá CV bằng AI dựa vào Job Description**: Hệ thống AI tự động phân tích và đánh giá mức độ phù hợp của CV với mô tả công việc.
+- **Gửi thông báo việc làm qua email**: Khi công việc được tạo phù hợp với level, salary, vị trí thì công việc đó sẽ được gửi qua email tự động cho người dùng.
 
 ## 🛠 Công Nghệ Sử Dụng
 
@@ -23,51 +36,40 @@ Trong thế giới ngày càng phát triển hiện nay, việc tìm kiếm mộ
 - **DevOps**: Docker, Kafka
  
 📌 **Backend**:
-- Spring Boot, Spring Data JPA, Spring Security, Spring REST API 
-- Authentication: JWT, OAuth2 
-- Logging: ELK (Elaticsearch, Logstash, Kibana)
-- Caching data: Redis
-- Quản lý API Swagger, Postman, Lombok
+- Framework: Spring Boot, Spring Data JPA, Spring Security, Spring REST API
+- Authentication: JWT, OAuth2
+- Logging & Monitoring: ELK Stack (Elasticsearch, Logstash, Kibana)
+- Caching: Redis
+- API Documentation & Utilities: Swagger, Postman, Lombok
 - Testing: JUnit 5, Mockito
-
-## 📝 Demo ứng dụng: http://jobhunter.lahoanggiang.io.vn
-
-**ADMIN:**
-- Email: admin@gmail.com
-- Password: 123456
 
 ## 🔧 Cài Đặt & Chạy Dự Án
 
 ### 1. Cài Đặt Backend 
 - Cài đặt JDK 17.
-- Tải mã nguồn backend.
-- Mở terminal và chạy lệnh: **./gradlew build -x test**
+- Clone mã nguồn Backend.
+- Mở terminal và chạy lệnh: **./gradlew build -x test**.
+- Chạy ứng dụng: **./gradlew bootRun**.
 
-### 2. Cài Đặt Frontend 
-- Cài đặt môi trường **Node.js**.
-- Tải mã nguồn frontend và chạy lệnh sau để cài đặt các gói phụ thuộc: **npm install**.
-- Build ứng dụng: **npm run build**.
-- Chạy ứng dụng ReactJS: **npm run preview**.
-
-### 3. Cấu Hình Cơ Sở Dữ Liệu (MySQL)
+### 2. Cấu Hình Cơ Sở Dữ Liệu (MySQL)
 - Cài đặt **MySQL**.
 - Tạo cơ sở dữ liệu mới: **CREATE DATABASE jobhunter;**
 - Chỉnh sửa cấu hình trong application.properties để kết nối với MySQL.
 
 ## 📞 Tác giả:
-- La Hoàng Giang - Tác giả https://github.com/lhggiang
+- **La Hoàng Giang** - [GitHub](https://github.com/lhggiang)
 
 ## 🔥 DEMO CHỨC NĂNG ỨNG DỤNG QUA POSTMAN
 
 #### ✅ Skill: có thể thêm, sửa, xóa, lấy danh sách skills (filter + pagination)
 
-Khi lấy danh sách skills phân trang 1 và lấy 3 phần tử, sort theo name giảm dần và filter skills có chứa từ "java" thì kết quả trả ra 2 skill.
+Khi lấy danh sách skills phân trang 1 và lấy 3 phần tử, sort theo name giảm dần và filter skills có chứa từ "java" thì kết quả trả ra 2 skills.
 
 ![image](https://github.com/user-attachments/assets/b67ff534-852f-4496-ab66-29e118eae8ae)
 
 #### ✅ Company: có thể thêm, sửa, xóa, lấy danh sách companies (filter + pagination), lấy company theo ID, đề xuất công ty tương tự công ty người dùng đã xem
 
-Khi người dùng xem công ty id = 3 (lĩnh vực IT ở HCM) thì hệ thống sẽ đề xuất thêm công ty id = 5 về IT và ở HCM (dùng Redis để in-memory)
+Khi người dùng xem công ty id = 3 (lĩnh vực IT ở HCM) thì hệ thống sẽ đề xuất thêm công ty id = 5 về IT và ở HCM (dùng Redis để in-memory).
 
 ![image](https://github.com/user-attachments/assets/9cc8b904-832f-4629-85ce-699902a9e595)
 ![image](https://github.com/user-attachments/assets/8d8bd98a-0adf-4038-a210-c59bace04f7d)
@@ -78,19 +80,19 @@ Khi người dùng xem công ty id = 3 (lĩnh vực IT ở HCM) thì hệ thốn
 
 #### ✅ Subscriber: có thể thêm, sửa subscriber, lấy skills của subscriber
 
-Ứng viên đăng ký kỹ năng, khi có những jobs liên quan đến kỹ năng ứng viên đăng ký sẽ được gửi thông tin qua email
+Ứng viên đăng ký kỹ năng, khi có những jobs liên quan đến kỹ năng ứng viên đăng ký sẽ được gửi thông tin qua email.
 
 ![image](https://github.com/user-attachments/assets/4df11190-0a40-448d-aba1-b1715f346f0d)
 
 #### ✅ Role: có thể thêm, sửa, xóa, lấy danh sách roles (filter + pagination), lấy role theo ID
 
-Khi lấy danh sách role ta có thể custom để lấy ra danh sách mong đợi, ví dụ lấy ra role có name là HR thì sẽ lấy thông tin của role đó kèm theo permissions 
+Khi lấy danh sách role ta có thể custom để lấy ra danh sách mong đợi, ví dụ lấy ra role có name là HR thì sẽ lấy thông tin của role đó kèm theo permissions. 
 
 ![image](https://github.com/user-attachments/assets/559a08d1-f444-4909-842f-99ee83ea6797)
 
 #### ✅ Résume: có thể thêm, sửa, xóa, lấy danh sách résumes (filter + pagination), lấy résume theo ID, phân tích résume dựa vào Job Description (ứng dụng AI)
 
-Lấy lịch sử tất cả résume đã nộp của ứng viên, ví dụ ứng viên admin đã nộp job Dev Python của Company 9
+Lấy lịch sử tất cả résume đã nộp của ứng viên, ví dụ ứng viên admin đã nộp job Dev Python của Company 9.
 
 ![image](https://github.com/user-attachments/assets/c2d771ab-ffe7-4cc3-876e-d6f8c418b0df)
 
@@ -100,7 +102,7 @@ Lấy lịch sử tất cả résume đã nộp của ứng viên, ví dụ ứn
 
 #### ✅ Job: có thể thêm, sửa, xóa, lấy danh sách jobs (filter + pagination), lấy job theo ID
 
-Tạo công việc Java Backend Developer thuộc company id = 4 và cần skill id = 1 và id = 3
+Tạo công việc Java Backend Developer thuộc company id = 4 và cần skill id = 1 và id = 3.
 
 ![image](https://github.com/user-attachments/assets/01ddc5dd-8742-4b52-95d3-42f346512ed2)
 
