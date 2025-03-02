@@ -148,6 +148,15 @@ Sử dụng ngôn ngữ **Python** để triển khai các kiến thức:
   
 ![image](https://github.com/user-attachments/assets/bb378973-840b-4e9e-84ed-c3e66261d19b)
 
+#### ✅ Code coverage với Jacoco
+- Sử dụng JUnit5 và Mockito để viết unit test, dùng Jacoco để đo code coverage của các unit test đã viết.
+
+Độ bao phủ code của unit test đều đạt trên 90% (giá trị ở cột đầu tiên) ở 2 ở class UserController và UserService
+
+![image](https://github.com/user-attachments/assets/d811df1e-4141-4d0c-b2f9-a11cfd667815)
+
+![image](https://github.com/user-attachments/assets/59d9ae7c-d114-4b83-8941-d80aa4f260a7)
+
 #### ✅ Quản lý log với ELK 
 - Sử dụng ELK (Elasticsearch, Logstash, Kibana) để quản lý log giúp thu thập, xử lý, lưu trữ và trực quan hóa dữ liệu log một cách hiệu quả, hỗ trợ giám sát hệ thống, phân tích lỗi và tối ưu hiệu suất.
 
